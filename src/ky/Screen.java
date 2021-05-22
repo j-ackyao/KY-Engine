@@ -1,6 +1,5 @@
 package ky;
 
-import java.awt.Graphics;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -8,33 +7,57 @@ import javax.swing.JFrame;
 public class Screen extends JFrame {
 	private static final long serialVersionUID = 1L;
 
-	Graphics g = this.getGraphics();
+	private double mspf = 0; // milliseconds per frame
+	private double referenceTime = 0;
+	public double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
 	
 	ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>();
 	
 	
-	public Screen(int width, int height, boolean resizable, boolean visible) {
+	public Screen(int width, int height, boolean resizable) {
 		this.setSize(width, height);
 		this.setResizable(resizable);
-		this.setVisible(visible);
+		this.setVisible(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		//assetLayers.add(new ArrayList<Asset>());
+		referenceTime = System.currentTimeMillis();
+	}
+	
+	public Screen(int width, int height, boolean resizable, int FPScap) {
+		this.setSize(width, height);
+		this.setResizable(resizable);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		mspf = 1000 / FPScap;
+		referenceTime = System.currentTimeMillis();
 	}
 	
 	public void update() {
-		System.out.println(assetLayers.toString());
+		if(System.currentTimeMillis() - referenceTime < mspf) {
+			System.out.println(mspf + ", " + (System.currentTimeMillis() - referenceTime));
+		}
+		else {
+			deltaT = System.currentTimeMillis() - referenceTime;
+			referenceTime = System.currentTimeMillis();
+			refresh();
+		}
+	}
+	
+	void refresh() {
 		for (ArrayList<Asset> layer : assetLayers) {
 			if (!layer.isEmpty()) {
 				for (Asset asset : layer) {
 					if (asset != null) {
-						System.out.println(asset.identifier);
-						getGraphics().drawImage(asset.image, asset.x, asset.y, null);
+						if (asset.getImage() != null) {
+							getGraphics().drawImage(asset.getImage(), asset.x, asset.y, null);
+						}
+						if (asset.getImages() != null) {
+							getGraphics().drawImage(asset.getImage(asset.nextAnimation()), asset.x, asset.y, null);
+						}
 					}
 				}
 			}
 		}
 	}
-	
 	
 	public void add(Asset asset, int layer) {
 		int difference = layer + 1 - assetLayers.size();

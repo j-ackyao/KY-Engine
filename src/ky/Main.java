@@ -7,43 +7,28 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Main {
+	
+	static long time = System.currentTimeMillis();
+	
 	public static void main(String[] args) {
-		Screen screen = new Screen(800, 600, true, true);
+		Screen screen = new Screen(720, 664, true, 2);
 		
 		try {
-			Image image = ImageIO.read(new File("test.png"));
-			Asset test = new Asset(image, 0, 0);
-			Asset test2 = new Asset(image, 50, 0);
-			Asset test3 = new Asset(image, 100, 0);
-			Asset test4 = new Asset(image, 150, 0);
-			Asset test5 = new Asset(image, 200, 0);
-			Asset test6 = new Asset(image, 250, 0);
-			Asset test7 = new Asset(image, 0, 100);
-			Asset test8 = new Asset(image, 50, 100);
-			Asset test9 = new Asset(image, 100, 100);
-			Asset test10 = new Asset(image, 150, 100);
-			Asset test11 = new Asset(image, 200, 100);
-			Asset test12 = new Asset(image, 250, 100);
-			screen.add(test, 0);
-			screen.add(test2, 0);
-			screen.add(test3, 0);
-			screen.add(test4, 0);
-			screen.add(test5, 0);
-			screen.add(test6, 0);
-
-			screen.update();
-			
-			screen.add(test7, 0);
-			screen.add(test8, 0);
-			screen.add(test9, 0);
-			screen.add(test10, 0);
-			screen.add(test11, 0);
-			screen.add(test12, 0);
-			screen.update();
+			Image nya = ImageIO.read(new File("nya.png"));
+			Image ichi = ImageIO.read(new File("ichi.png"));
+			Image ni = ImageIO.read(new File("ni.png"));
+			Image san = ImageIO.read(new File("san.png"));
+			Image arigatou = ImageIO.read(new File("arigatou.png"));
+			Image[] group = {nya, ichi, ni, san, nya, arigatou};
+			Asset asset = new Asset(group, 0, 0);
+			screen.add(asset, 0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		while(true) {
+			screen.update();
+		}
 		
 	}
 }
