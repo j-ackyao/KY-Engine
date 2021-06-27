@@ -11,9 +11,10 @@ public class Screen extends JFrame {
 	private double referenceTime = 0;
 	public double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
 	
-	ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>();
 	
-	
+	ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
+																				// assets within layers do not have render priorities
+																			   // between them
 	public Screen(int width, int height, boolean resizable) {
 		this.setSize(width, height);
 		this.setResizable(resizable);
@@ -31,6 +32,7 @@ public class Screen extends JFrame {
 		referenceTime = System.currentTimeMillis();
 	}
 	
+	// called from main to update the screen, this func will only call refresh when time between frames matches the fps
 	public void update() {
 		if(System.currentTimeMillis() - referenceTime < mspf) {
 			System.out.println(mspf + ", " + (System.currentTimeMillis() - referenceTime));
@@ -42,16 +44,17 @@ public class Screen extends JFrame {
 		}
 	}
 	
-	void refresh() {
+	// called from update to actually update the screen
+	private void refresh() {
 		for (ArrayList<Asset> layer : assetLayers) {
 			if (!layer.isEmpty()) {
 				for (Asset asset : layer) {
 					if (asset != null) {
 						if (asset.getImage() != null) {
-							getGraphics().drawImage(asset.getImage(), asset.x, asset.y, null);
+							getGraphics().drawImage(asset.getImage(), asset.x, asset.y, asset.width, asset.height, null);
 						}
 						if (asset.getImages() != null) {
-							getGraphics().drawImage(asset.getImage(asset.nextAnimation()), asset.x, asset.y, null);
+							getGraphics().drawImage(asset.getImage(asset.nextAnimation()), asset.x, asset.y, asset.width, asset.height, null);
 						}
 					}
 				}
@@ -59,9 +62,10 @@ public class Screen extends JFrame {
 		}
 	}
 	
+	// adds the assets to layers according to index (zero based indexing, 0 being bottom)
 	public void add(Asset asset, int layer) {
 		int difference = layer + 1 - assetLayers.size();
-		if(difference > 0) {
+		if(difference > 0) { // checks if the indicated index exists or not and adds layers in between
 			for(int i = 0; i < difference; i++) {
 				assetLayers.add(new ArrayList<Asset>());
 			}
