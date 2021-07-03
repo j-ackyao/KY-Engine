@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 public class Entity {
 	
-	int[] position = null;
+	int[] position = new int[2];
 	ArrayList<Asset> assets = new ArrayList<Asset>();
 	
 	public Entity(int x, int y) {
-		position = new int[]{x, y};
+		position[0] = x;
+		position[1] = y;
 	}
 	
 	public void addAsset(Asset asset) {
