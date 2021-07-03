@@ -8,15 +8,17 @@ import javax.imageio.ImageIO;
 
 public class Asset {
 	
-	int x;
-	int y;
-	int width;
-	int height;
-	BufferedImage image = null;
-	BufferedImage[] images = null;
-	String identifier = null;
-	boolean animated = false;
-	int animationCycle = -1;
+	private int x;
+	private int y;
+	private int width;
+	private int height;
+	private BufferedImage image = null;
+	private BufferedImage[] images = null;
+	private String identifier = null;
+	private boolean animated = false;
+	private int animationCycle = 0;
+	private double animationTime = 0; // milliseconds between animation sprites, this should not be less than screen's mspf
+	private double animationReferenceTime = 0; // current time at which animation sprite is changed
 	
 	public Asset(BufferedImage image, int x, int y) {
 		this.image = image;
@@ -52,8 +54,10 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y) {
+	public Asset(BufferedImage[] images, int x, int y, double animationTime) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.images = images;
 		this.x = x;
 		this.y = y;
@@ -61,8 +65,10 @@ public class Asset {
 		this.height = images[0].getHeight();
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y, int width, int height) {
+	public Asset(BufferedImage[] images, int x, int y, int width, int height, double animationTime) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.images = images;
 		this.x = x;
 		this.y = y;
@@ -70,8 +76,10 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y, String name) {
+	public Asset(BufferedImage[] images, int x, int y, double animationTime, String name) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.identifier = name;
 		this.images = images;
 		this.x = x;
@@ -80,8 +88,10 @@ public class Asset {
 		this.height = images[0].getHeight();
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y, int width, int height, String name) {
+	public Asset(BufferedImage[] images, int x, int y, int width, int height, double animationTime, String name) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.identifier = name;
 		this.images = images;
 		this.x = x;
@@ -124,8 +134,10 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(String[] filenames, int x, int y) {
+	public Asset(String[] filenames, int x, int y, double animationTime) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.images = readImage(filenames);
 		this.x = x;
 		this.y = y;
@@ -133,8 +145,10 @@ public class Asset {
 		this.height = this.images[0].getHeight();
 	}
 	
-	public Asset(String[] filenames, int x, int y, int width, int height) {
+	public Asset(String[] filenames, int x, int y, int width, int height, double animationTime) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.images = readImage(filenames);
 		this.x = x;
 		this.y = y;
@@ -142,8 +156,10 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(String[] filenames, int x, int y, String name) {
+	public Asset(String[] filenames, int x, int y, double animationTime, String name) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.identifier = name;
 		this.images = readImage(filenames);
 		this.x = x;
@@ -152,8 +168,10 @@ public class Asset {
 		this.height = this.images[0].getHeight();
 	}
 	
-	public Asset(String[] filenames, int x, int y, int width, int height, String name) {
+	public Asset(String[] filenames, int x, int y, int width, int height, double animationTime, String name) {
 		this.animated = true;
+		this.animationTime = animationTime * 1000;
+		this.animationReferenceTime = System.currentTimeMillis();
 		this.identifier = name;
 		this.images = readImage(filenames);
 		this.x = x;
@@ -183,28 +201,38 @@ public class Asset {
 		return this.y;
 	}
 	
-	public int nextAnimation() {
-		if(animated) {
-			animationCycle++;
-			if(animationCycle > images.length - 1) {
-				animationCycle = 0;
-			}
-			return animationCycle;
-		}
-		return 0;
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
 	}
 	
 	public BufferedImage getImage() {
-		return this.image;
+		if (animated) {
+			if(System.currentTimeMillis() - animationReferenceTime > animationTime) {
+				animationReferenceTime = System.currentTimeMillis();
+				animationCycle++;
+				if(animationCycle > images.length - 1) {
+					animationCycle = 0;
+				}
+				return getImage(animationCycle);
+			}
+			return getImage(animationCycle);
+		}
+		else {
+			return this.image;
+		}
 	}
 	
 	public BufferedImage getImage(int index) {
 		try {
 			return this.images[index];
-		} catch (ArrayIndexOutOfBoundsException aioobe) {
-			aioobe.printStackTrace();
+		} catch (ArrayIndexOutOfBoundsException noImageAtIndex) {
+			noImageAtIndex.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	public BufferedImage[] getImages() {
@@ -216,13 +244,13 @@ public class Asset {
 		BufferedImage image = null;
 		try {
 			image = ImageIO.read(new File(filename));
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException missingTexture) {
+			missingTexture.printStackTrace();
 			try {
 				image = ImageIO.read(new File("missing.png"));
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				System.exit(-1);
+			} catch (IOException missingFallbackTexture) {
+				missingFallbackTexture.printStackTrace();
+				System.exit(0);
 			}
 		}
 		return image;
@@ -233,17 +261,16 @@ public class Asset {
 		for(int i = 0; i < filenames.length; i++) {
 			try {
 				images[i] = ImageIO.read(new File(filenames[i]));
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException missingTexture) {
+				missingTexture.printStackTrace();
 				try {
 					images[i] = ImageIO.read(new File("missing.png"));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-					System.exit(-1);
+				} catch (IOException missingFallbackTexture) {
+					missingFallbackTexture.printStackTrace();
+					System.exit(0);
 				}
 			}
 		}
-		
 		return images;
 	}
 }
