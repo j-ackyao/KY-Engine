@@ -22,12 +22,8 @@ public class Screen extends JFrame {
 	public double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
 	
 	private KeyEvent keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED);
-	private ArrayList<Character> activeKeys = new ArrayList<Character>();
+	private ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
 	
-	
-	private ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
-																				// assets within layers do not have render priorities
-																			   // between them
 	public Screen(int width, int height, boolean resizable) {
 		this.setSize(width, height);
 		this.addKeyListener(keyListener);
@@ -70,52 +66,65 @@ public class Screen extends JFrame {
 	private void render(Graphics g) {
 		offscreen = createImage(getWidth(), getHeight());
 		offg = offscreen.getGraphics();
+
+		Entity[][] allEntities = Entity.getEntities();
+		Asset[][] allAssets = Asset.getAssets();
+		boolean renderAssets = true;
+		boolean renderEntities = true;
+		int i = 0;
 		
-		for (ArrayList<Asset> layer : assetLayers) {
-			if (!layer.isEmpty()) {
-				for (Asset asset : layer) {
-					if (asset != null) {
-						offg.drawImage(asset.getImage(), asset.getX(), asset.getY(), asset.getWidth(), asset.getHeight(), null);
+		while(renderAssets || renderEntities) {
+			
+			if(i < allEntities.length) {
+				if(allEntities[i].length != 0) {	
+					for(Entity e : allEntities[i]) {
+						for(Asset a : e.getAssets()) {
+							offg.drawImage(a.getImage(), a.getX() + e.getX(), a.getY() + e.getY(), a.getWidth(), a.getHeight(), null);
+						}
 					}
 				}
 			}
+			else {
+				renderEntities = false;
+			}
+			
+			if(i < allAssets.length) {
+				if(allAssets[i].length != 0) {	
+					for(Asset a : allAssets[i]) {
+						offg.drawImage(a.getImage(), a.getX(), a.getY(), a.getWidth(), a.getHeight(), null);					
+					}
+				}
+			}
+			else {
+				renderAssets = false;
+			}
+			
+			i++;
 		}
 		g.drawImage(offscreen, 0, 0, this);
 		offg.dispose();
-	}
-	
-	// adds the assets to layers according to index (zero based indexing, 0 being bottom)
-	public void add(Asset asset, int layer) {
-		int difference = layer + 1 - assetLayers.size();
-		if(difference > 0) { // checks if the indicated index exists or not and adds layers in between
-			for(int i = 0; i < difference; i++) {
-				assetLayers.add(new ArrayList<Asset>());
-			}
-		}
-		assetLayers.get(layer).add(asset);
 	}
 	
 	public KeyEvent getKeyEvent() {
 		return keyEvent;
 	}
 	
-	public Character[] getKeys() {
-		Character[] current = activeKeys.toArray(new Character[activeKeys.size()]);
-		return current;
+	public boolean getKeyStatus(int key) {
+		return activeKeyCodes.contains(key);
 	}
 	
 	KeyListener keyListener = new KeyListener() {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if(!activeKeys.contains(e.getKeyChar())) {
-				activeKeys.add(e.getKeyChar());
+			if(!activeKeyCodes.contains(e.getKeyCode())) {
+				activeKeyCodes.add(e.getKeyCode());
 			}
 			keyEvent = e;
 		}
 		@Override
 		public void keyReleased(KeyEvent e) {
-			if(activeKeys.contains(e.getKeyChar())) {
-				activeKeys.remove(activeKeys.indexOf(e.getKeyChar()));
+			if(activeKeyCodes.contains(e.getKeyCode())) {
+				activeKeyCodes.remove(activeKeyCodes.indexOf(e.getKeyCode()));
 			}
 			keyEvent = e;
 		}

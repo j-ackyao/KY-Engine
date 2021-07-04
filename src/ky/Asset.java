@@ -3,10 +3,25 @@ package ky;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 public class Asset {
+	
+	private static ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
+																								// assets within layers do not have render priorities
+	   																							// between them
+	public static Asset[][] getAssets(){ // gets all assets whilst keeping the layers
+		Asset[][] converted = new Asset[assetLayers.size()][];
+		for(int i = 0; i < assetLayers.size(); i++) {
+			converted[i] = assetLayers.get(i).toArray(new Asset[assetLayers.get(i).size()]);
+		}
+		return converted;
+	}
+	
+	// everything above this comment is for the asset class (static)
+	// below this comment is for the respective asset
 	
 	private int x;
 	private int y;
@@ -14,7 +29,7 @@ public class Asset {
 	private int height;
 	private BufferedImage image = null;
 	private BufferedImage[] images = null;
-	private String identifier = null;
+	private String name = "";
 	private boolean animated = false;
 	private int animationCycle = 0;
 	private double animationTime = 0; // milliseconds between animation sprites, this should not be less than screen's mspf
@@ -37,7 +52,7 @@ public class Asset {
 	}
 	
 	public Asset(BufferedImage image, int x, int y, String name) {
-		this.identifier = name;
+		this.name = name;
 		this.image = image;
 		this.x = x;
 		this.y = y;
@@ -46,7 +61,7 @@ public class Asset {
 	}
 	
 	public Asset(BufferedImage image, int x, int y, int width, int height, String name) {
-		this.identifier = name;
+		this.name = name;
 		this.image = image;
 		this.x = x;
 		this.y = y;
@@ -80,7 +95,7 @@ public class Asset {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
-		this.identifier = name;
+		this.name = name;
 		this.images = images;
 		this.x = x;
 		this.y = y;
@@ -92,7 +107,7 @@ public class Asset {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
-		this.identifier = name;
+		this.name = name;
 		this.images = images;
 		this.x = x;
 		this.y = y;
@@ -117,7 +132,7 @@ public class Asset {
 	}
 	
 	public Asset(String filename, int x, int y, String name) {
-		this.identifier = name;
+		this.name = name;
 		this.image = readImage(filename);
 		this.x = x;
 		this.y = y;
@@ -126,7 +141,7 @@ public class Asset {
 	}
 	
 	public Asset(String filename, int x, int y, int width, int height, String name) {
-		this.identifier = name;
+		this.name = name;
 		this.image = readImage(filename);
 		this.x = x;
 		this.y = y;
@@ -160,7 +175,7 @@ public class Asset {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
-		this.identifier = name;
+		this.name = name;
 		this.images = readImage(filenames);
 		this.x = x;
 		this.y = y;
@@ -172,12 +187,30 @@ public class Asset {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
-		this.identifier = name;
+		this.name = name;
 		this.images = readImage(filenames);
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+	}
+	
+	// adds the assets to layers according to index (zero based indexing, 0 being bottom)
+	public void setVisible(boolean visible, int layer) {
+		int difference = layer + 1 - assetLayers.size();
+		if(difference > 0) { // checks if the indicated index doesn't exist
+			if(visible) { // if does not exist yet and is adding, add filler layers
+				for(int i = 0; i < difference; i++) {
+					assetLayers.add(new ArrayList<Asset>());
+				}
+			}
+		}
+		else if(!visible && assetLayers.get(layer).contains(this)) { // if layer does exist and is remove
+			assetLayers.get(layer).remove(this);
+		}
+		if(visible && !assetLayers.get(layer).contains(this)) { // add to layer
+			assetLayers.get(layer).add(this);
+		}
 	}
 	
 	public void rescale(double factor) {
@@ -186,7 +219,7 @@ public class Asset {
 	}
 	
 	public String getName() {
-		return this.identifier;
+		return this.name;
 	}
 	
 	public boolean isAnimated() {
