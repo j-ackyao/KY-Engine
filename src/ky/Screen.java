@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public class Screen extends JFrame {
+public abstract class Screen extends JFrame {
 	private static final long serialVersionUID = 1897229948652321731L;
 
 	
@@ -32,6 +32,9 @@ public class Screen extends JFrame {
 		this.setVisible(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		referenceTime = System.currentTimeMillis();
+		
+		start();
+		run();
 	}
 	
 	public Screen(int width, int height, boolean resizable, int FPScap) {
@@ -48,18 +51,25 @@ public class Screen extends JFrame {
 			System.out.println("Invalid FPS cap, no FPS cap will be set.");
 		}
 		referenceTime = System.currentTimeMillis();
+		
+		start();
+		run();
 	}
 	
-	// called from main to update the screen, this func will only call refresh when time between frames matches the fps
-	public void update() {
-		if(System.currentTimeMillis() - referenceTime < mspf) {
-			//System.out.println(mspf + ", " + (System.currentTimeMillis() - referenceTime));
+	public abstract void start();
+	
+	public abstract void update();
+	
+	private void run() {
+		while(isVisible()) {
+			if(System.currentTimeMillis() - referenceTime > mspf) {
+				deltaT = System.currentTimeMillis() - referenceTime;
+				referenceTime = System.currentTimeMillis();
+				update();
+				render(getGraphics());
+			}
 		}
-		else {
-			deltaT = System.currentTimeMillis() - referenceTime;
-			referenceTime = System.currentTimeMillis();
-			render(getGraphics());
-		}
+		
 	}
 	
 	// called from update to actually update the screen
@@ -78,7 +88,7 @@ public class Screen extends JFrame {
 				if(allEntities[i].length != 0) {		// if entity layer is not empty
 					for(Entity e : allEntities[i]) {
 						for(Asset a : e.getAssets()) {
-							offg.drawImage(a.getImage(), a.getX() + e.getX(), a.getY() + e.getY(), a.getWidth(), a.getHeight(), null);
+							offg.drawImage(a.getImage(), (int) Math.round(a.getX() + e.getX()), (int) Math.round(a.getY() + e.getY()), a.getWidth(), a.getHeight(), null);
 						}
 					}
 				}
@@ -90,7 +100,7 @@ public class Screen extends JFrame {
 			if(i < allAssets.length) {
 				if(allAssets[i].length != 0) {			// if asset layer is not empty
 					for(Asset a : allAssets[i]) {
-						offg.drawImage(a.getImage(), a.getX(), a.getY(), a.getWidth(), a.getHeight(), null);					
+						offg.drawImage(a.getImage(), (int) Math.round(a.getX()), (int) Math.round(a.getY()), a.getWidth(), a.getHeight(), null);					
 					}
 				}
 			}
@@ -102,6 +112,7 @@ public class Screen extends JFrame {
 		g.drawImage(offscreen, 0, 0, this);
 		offg.dispose();
 	}
+	
 	
 	public KeyEvent getKeyEvent() {
 		return keyEvent;
