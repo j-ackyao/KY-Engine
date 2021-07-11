@@ -33,8 +33,8 @@ public class Asset {
 	// everything above this comment is for the asset class (static)
 	// below this comment is for the respective asset
 	
-	private int x;
-	private int y;
+	private double x;
+	private double y;
 	private int width;
 	private int height;
 	private BufferedImage image = null; // sprite of asset
@@ -45,7 +45,7 @@ public class Asset {
 	private double animationTime = 0; // milliseconds between animation sprites, this should not be less than screen's mspf
 	private double animationReferenceTime = 0; // current time at which animation sprite is changed
 	
-	public Asset(BufferedImage image, int x, int y) {
+	public Asset(BufferedImage image, double x, double y) {
 		this.image = image;
 		this.x = x;
 		this.y = y;
@@ -53,7 +53,7 @@ public class Asset {
 		this.height = image.getHeight();
 	}
 	
-	public Asset(BufferedImage image, int x, int y, int width, int height) {
+	public Asset(BufferedImage image, double x, double y, int width, int height) {
 		this.image = image;
 		this.x = x;
 		this.y = y;
@@ -61,7 +61,7 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(BufferedImage image, int x, int y, String name) {
+	public Asset(BufferedImage image, double x, double y, String name) {
 		this.name = name;
 		this.image = image;
 		this.x = x;
@@ -70,7 +70,7 @@ public class Asset {
 		this.height = image.getHeight();
 	}
 	
-	public Asset(BufferedImage image, int x, int y, int width, int height, String name) {
+	public Asset(BufferedImage image, double x, double y, int width, int height, String name) {
 		this.name = name;
 		this.image = image;
 		this.x = x;
@@ -79,7 +79,7 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y, double animationTime) {
+	public Asset(BufferedImage[] images, double x, double y, double animationTime) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -90,7 +90,7 @@ public class Asset {
 		this.height = images[0].getHeight();
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y, int width, int height, double animationTime) {
+	public Asset(BufferedImage[] images, double x, double y, int width, int height, double animationTime) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -101,7 +101,7 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y, double animationTime, String name) {
+	public Asset(BufferedImage[] images, double x, double y, double animationTime, String name) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -113,7 +113,7 @@ public class Asset {
 		this.height = images[0].getHeight();
 	}
 	
-	public Asset(BufferedImage[] images, int x, int y, int width, int height, double animationTime, String name) {
+	public Asset(BufferedImage[] images, double x, double y, int width, int height, double animationTime, String name) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -125,7 +125,7 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(String filename, int x, int y) {
+	public Asset(String filename, double x, double y) {
 		this.image = readImage(filename);
 		this.x = x;
 		this.y = y;
@@ -133,7 +133,7 @@ public class Asset {
 		this.height = this.image.getHeight();
 	}
 	
-	public Asset(String filename, int x, int y, int width, int height) {
+	public Asset(String filename, double x, double y, int width, int height) {
 		this.image = readImage(filename);
 		this.x = x;
 		this.y = y;
@@ -141,7 +141,7 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(String filename, int x, int y, String name) {
+	public Asset(String filename, double x, double y, String name) {
 		this.name = name;
 		this.image = readImage(filename);
 		this.x = x;
@@ -150,7 +150,7 @@ public class Asset {
 		this.height = this.image.getHeight();
 	}
 	
-	public Asset(String filename, int x, int y, int width, int height, String name) {
+	public Asset(String filename, double x, double y, int width, int height, String name) {
 		this.name = name;
 		this.image = readImage(filename);
 		this.x = x;
@@ -159,7 +159,7 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(String[] filenames, int x, int y, double animationTime) {
+	public Asset(String[] filenames, double x, double y, double animationTime) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -170,7 +170,7 @@ public class Asset {
 		this.height = this.images[0].getHeight();
 	}
 	
-	public Asset(String[] filenames, int x, int y, int width, int height, double animationTime) {
+	public Asset(String[] filenames, double x, double y, int width, int height, double animationTime) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -181,7 +181,7 @@ public class Asset {
 		this.height = height;
 	}
 	
-	public Asset(String[] filenames, int x, int y, double animationTime, String name) {
+	public Asset(String[] filenames, double x, double y, double animationTime, String name) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -193,7 +193,7 @@ public class Asset {
 		this.height = this.images[0].getHeight();
 	}
 	
-	public Asset(String[] filenames, int x, int y, int width, int height, double animationTime, String name) {
+	public Asset(String[] filenames, double x, double y, int width, int height, double animationTime, String name) {
 		this.animated = true;
 		this.animationTime = animationTime * 1000;
 		this.animationReferenceTime = System.currentTimeMillis();
@@ -237,15 +237,15 @@ public class Asset {
 		return this.animated;
 	}
 	
-	public int[] getPos() {
-		return new int[]{this.x, this.y};
+	public double[] getPos() {
+		return new double[]{this.x, this.y};
 	}
 	
-	public int getX() {
+	public double getX() {
 		return this.x;
 	}
 	
-	public int getY() {
+	public double getY() {
 		return this.y;
 	}
 	

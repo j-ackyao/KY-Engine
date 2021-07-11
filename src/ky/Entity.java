@@ -19,12 +19,12 @@ public class Entity {
 	// below this comment is for the respective entity
 	
 	
-	private int x;
-	private int y;
+	private double x;
+	private double y;
 	private ArrayList<Asset> assets = new ArrayList<Asset>(); // assets of entity (no render order)
 	
 	
-	public Entity(int x, int y, Asset[] assets) {
+	public Entity(double x, double y, Asset[] assets) {
 		this.x = x;
 		this.y = y;
 		this.assets.addAll(Arrays.asList(assets));
@@ -65,20 +65,20 @@ public class Entity {
 		return assets.toArray(new Asset[assets.size()]);
 	}
 	
-	public void setPos(int x, int y) {
+	public void setPos(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public int[] getPos() {
-		return new int[]{this.x, this.y};
+	public double[] getPos() {
+		return new double[]{this.x, this.y};
 	}
 	
-	public int getX() {
+	public double getX() {
 		return this.x;
 	}
 	
-	public int getY() {
+	public double getY() {
 		return this.y;
 	}
 }
