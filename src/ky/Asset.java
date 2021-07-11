@@ -20,6 +20,16 @@ public class Asset {
 		return converted;
 	}
 	
+	
+	private static BufferedImage getMissing() {
+		try {
+			return ImageIO.read(new File("missing.png"));
+		} catch (IOException missingFallbackTexture) {
+			missingFallbackTexture.printStackTrace();
+			System.exit(0);
+		}
+		return null;
+	}
 	// everything above this comment is for the asset class (static)
 	// below this comment is for the respective asset
 	
@@ -27,11 +37,11 @@ public class Asset {
 	private int y;
 	private int width;
 	private int height;
-	private BufferedImage image = null;
-	private BufferedImage[] images = null;
-	private String name = "";
-	private boolean animated = false;
-	private int animationCycle = 0;
+	private BufferedImage image = null; // sprite of asset
+	private BufferedImage[] images = null; // sprites of asset if animated
+	private String name = ""; // asset's name
+	private boolean animated = false; // if asset has animation or not
+	private int animationCycle = 0; // the index of sprites which the animation is currently on
 	private double animationTime = 0; // milliseconds between animation sprites, this should not be less than screen's mspf
 	private double animationReferenceTime = 0; // current time at which animation sprite is changed
 	
@@ -196,16 +206,17 @@ public class Asset {
 	}
 	
 	// adds the assets to layers according to index (zero based indexing, 0 being bottom)
+	// visible boolean is to either remove or add asset
 	public void setVisible(boolean visible, int layer) {
-		int difference = layer + 1 - assetLayers.size();
-		if(difference > 0) { // checks if the indicated index doesn't exist
-			if(visible) { // if does not exist yet and is adding, add filler layers
-				for(int i = 0; i < difference; i++) {
+		if(visible) { 										// if adding asset
+			int difference = layer + 1 - assetLayers.size();// check if the indicated layer exists or not
+			if(difference > 0) { 							// if difference is greater than 0,
+				for(int i = 0; i < difference; i++) {		// there needs to be filler layers to reach the indicated layer
 					assetLayers.add(new ArrayList<Asset>());
 				}
 			}
 		}
-		else if(!visible && assetLayers.get(layer).contains(this)) { // if layer does exist and is remove
+		else if(!visible && assetLayers.get(layer).contains(this)) { // if layer exists and is removing asset
 			assetLayers.get(layer).remove(this);
 		}
 		if(visible && !assetLayers.get(layer).contains(this)) { // add to layer
@@ -224,6 +235,10 @@ public class Asset {
 	
 	public boolean isAnimated() {
 		return this.animated;
+	}
+	
+	public int[] getPos() {
+		return new int[]{this.x, this.y};
 	}
 	
 	public int getX() {
@@ -264,7 +279,7 @@ public class Asset {
 			return this.images[index];
 		} catch (ArrayIndexOutOfBoundsException noImageAtIndex) {
 			noImageAtIndex.printStackTrace();
-			return null;
+			return getMissing();
 		}
 	}
 
@@ -279,12 +294,7 @@ public class Asset {
 			image = ImageIO.read(new File(filename));
 		} catch (IOException missingTexture) {
 			missingTexture.printStackTrace();
-			try {
-				image = ImageIO.read(new File("missing.png"));
-			} catch (IOException missingFallbackTexture) {
-				missingFallbackTexture.printStackTrace();
-				System.exit(0);
-			}
+			getMissing();
 		}
 		return image;
 	}
@@ -296,12 +306,7 @@ public class Asset {
 				images[i] = ImageIO.read(new File(filenames[i]));
 			} catch (IOException missingTexture) {
 				missingTexture.printStackTrace();
-				try {
-					images[i] = ImageIO.read(new File("missing.png"));
-				} catch (IOException missingFallbackTexture) {
-					missingFallbackTexture.printStackTrace();
-					System.exit(0);
-				}
+				getMissing();
 			}
 		}
 		return images;
