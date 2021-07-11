@@ -67,16 +67,15 @@ public class Screen extends JFrame {
 		offscreen = createImage(getWidth(), getHeight());
 		offg = offscreen.getGraphics();
 
-		Entity[][] allEntities = Entity.getEntities();
-		Asset[][] allAssets = Asset.getAssets();
+		Entity[][] allEntities = Entity.getEntities();	// retrieve all our entities
+		Asset[][] allAssets = Asset.getAssets();		// retrieve all our assets
 		boolean renderAssets = true;
 		boolean renderEntities = true;
-		int i = 0;
+		int i = 0;										// this acts as the index for the layers, goes through all the layers to render
 		
-		while(renderAssets || renderEntities) {
-			
+		while(renderAssets || renderEntities) {			// acts like a "for loop," stops when either entities or assets have been rendered 
 			if(i < allEntities.length) {
-				if(allEntities[i].length != 0) {	
+				if(allEntities[i].length != 0) {		// if entity layer is not empty
 					for(Entity e : allEntities[i]) {
 						for(Asset a : e.getAssets()) {
 							offg.drawImage(a.getImage(), a.getX() + e.getX(), a.getY() + e.getY(), a.getWidth(), a.getHeight(), null);
@@ -89,7 +88,7 @@ public class Screen extends JFrame {
 			}
 			
 			if(i < allAssets.length) {
-				if(allAssets[i].length != 0) {	
+				if(allAssets[i].length != 0) {			// if asset layer is not empty
 					for(Asset a : allAssets[i]) {
 						offg.drawImage(a.getImage(), a.getX(), a.getY(), a.getWidth(), a.getHeight(), null);					
 					}
@@ -98,7 +97,6 @@ public class Screen extends JFrame {
 			else {
 				renderAssets = false;
 			}
-			
 			i++;
 		}
 		g.drawImage(offscreen, 0, 0, this);
@@ -112,7 +110,7 @@ public class Screen extends JFrame {
 	public boolean getKeyStatus(int key) {
 		return activeKeyCodes.contains(key);
 	}
-	
+
 	KeyListener keyListener = new KeyListener() {
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -129,7 +127,7 @@ public class Screen extends JFrame {
 			keyEvent = e;
 		}
 		@Override
-		public void keyTyped(KeyEvent e) {
+		public void keyTyped(KeyEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}

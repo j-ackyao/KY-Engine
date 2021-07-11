@@ -33,17 +33,17 @@ public class Entity {
 	// adds the assets to layers according to index (zero based indexing, 0 being bottom)
 	public void setVisible(boolean visible, int layer) {
 		int difference = layer + 1 - entityLayers.size();
-		if(difference > 0) { // checks if the indicated index doesn't exist
-			if(visible) { // if does not exist yet and is adding, add filler layers
+		if(difference > 0) { 							// checks if the indicated index doesn't exist
+			if(visible) { 								// if does not exist yet and is adding, add filler layers
 				for(int i = 0; i < difference; i++) {
 					entityLayers.add(new ArrayList<Entity>());
 				}
 			}
 		}
-		else if(!visible && entityLayers.get(layer).contains(this)) { // if layer does exist and is remove
+		else if(!visible && entityLayers.get(layer).contains(this)) {	// if layer does exist and is remove
 			entityLayers.get(layer).remove(this);
 		}
-		if(visible && !entityLayers.get(layer).contains(this)) { // add to layer
+		if(visible && !entityLayers.get(layer).contains(this)) {		// add to layer
 			entityLayers.get(layer).add(this);
 		}
 	}
@@ -70,6 +70,10 @@ public class Entity {
 		this.y = y;
 	}
 
+	public int[] getPos() {
+		return new int[]{this.x, this.y};
+	}
+	
 	public int getX() {
 		return this.x;
 	}
