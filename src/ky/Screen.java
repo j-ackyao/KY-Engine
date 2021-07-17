@@ -13,13 +13,35 @@ import javax.swing.JFrame;
 public abstract class Screen extends JFrame {
 	private static final long serialVersionUID = 1897229948652321731L;
 
+
+	private static ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
+																								// assets within layers do not have render priorities
+	   																							// between them
+	private static ArrayList<ArrayList<Entity>> entityLayers = new ArrayList<ArrayList<Entity>>(); // holds all the entities to be rendered
+	
+	public static Entity[][] getEntities(){
+		Entity[][] converted = new Entity[entityLayers.size()][];
+		for(int i = 0; i < entityLayers.size(); i++) {
+			converted[i] = entityLayers.get(i).toArray(new Entity[entityLayers.get(i).size()]);
+		}
+		return converted;
+	}
+	
+	public static Asset[][] getAssets(){ // gets all assets whilst keeping the layers
+		Asset[][] converted = new Asset[assetLayers.size()][];
+		for(int i = 0; i < assetLayers.size(); i++) {
+			converted[i] = assetLayers.get(i).toArray(new Asset[assetLayers.get(i).size()]);
+		}
+		return converted;
+	}
+	
 	
 	private Image offscreen;
 	private Graphics offg;
 	
 	private double mspf = 0; // milliseconds per frame
 	private double referenceTime = 0;
-	public double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
+	private double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
 	
 	private KeyEvent keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED);
 	private ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
@@ -77,18 +99,25 @@ public abstract class Screen extends JFrame {
 		offscreen = createImage(getWidth(), getHeight());
 		offg = offscreen.getGraphics();
 
-		Entity[][] allEntities = Entity.getEntities();	// retrieve all our entities
-		Asset[][] allAssets = Asset.getAssets();		// retrieve all our assets
+		Entity[][] allEntities = getEntities();	// retrieve all our entities
+		Asset[][] allAssets = getAssets();		// retrieve all our assets
 		boolean renderAssets = true;
 		boolean renderEntities = true;
 		int i = 0;										// this acts as the index for the layers, goes through all the layers to render
 		
-		while(renderAssets || renderEntities) {			// acts like a "for loop," stops when either entities or assets have been rendered 
+		while(renderAssets && renderEntities) {			// acts like a "for loop," stops when either entities or assets have been rendered 
+			
 			if(i < allEntities.length) {
 				if(allEntities[i].length != 0) {		// if entity layer is not empty
 					for(Entity e : allEntities[i]) {
-						for(Asset a : e.getAssets()) {
-							offg.drawImage(a.getImage(), (int) Math.round(a.getX() + e.getX()), (int) Math.round(a.getY() + e.getY()), a.getWidth(), a.getHeight(), null);
+						if(e.isVisible()) {
+							for(Asset[] assetLayer : e.getAssets()) {
+								for(Asset a : assetLayer) {
+									if(a.isVisible()) {
+										offg.drawImage(a.getImage(), (int) Math.round(a.getX() + e.getX()), (int) Math.round(a.getY() + e.getY()), a.getWidth(), a.getHeight(), null);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -100,7 +129,9 @@ public abstract class Screen extends JFrame {
 			if(i < allAssets.length) {
 				if(allAssets[i].length != 0) {			// if asset layer is not empty
 					for(Asset a : allAssets[i]) {
-						offg.drawImage(a.getImage(), (int) Math.round(a.getX()), (int) Math.round(a.getY()), a.getWidth(), a.getHeight(), null);					
+						if(a.isVisible()) {
+							offg.drawImage(a.getImage(), (int) Math.round(a.getX()), (int) Math.round(a.getY()), a.getWidth(), a.getHeight(), null);
+						}
 					}
 				}
 			}
@@ -113,13 +144,40 @@ public abstract class Screen extends JFrame {
 		offg.dispose();
 	}
 	
+	public void addAsset(Asset asset) {
+		int difference = asset.getLayer() + 1 - assetLayers.size();// check if the indicated layer exists or not
+		if(difference > 0) { 							// if difference is greater than 0,
+			for(int i = 0; i < difference; i++) {		// there needs to be filler layers to reach the indicated layer
+				assetLayers.add(new ArrayList<Asset>());
+			}
+		}
+		if(!assetLayers.get(asset.getLayer()).contains(asset)) { // add to layer
+			assetLayers.get(asset.getLayer()).add(asset);
+		}
+	}
+	
+	public void addEntity(Entity entity) {
+		int difference = entity.getLayer() + 1 - entityLayers.size();// check if the indicated layer exists or not
+		if(difference > 0) { 							// if difference is greater than 0,
+			for(int i = 0; i < difference; i++) {		// there needs to be filler layers to reach the indicated layer
+				entityLayers.add(new ArrayList<Entity>());
+			}
+		}
+		if(!entityLayers.get(entity.getLayer()).contains(entity)) { // add to layer
+			entityLayers.get(entity.getLayer()).add(entity);
+		}
+	}
+	
+	public double deltaT() {
+		return this.deltaT;
+	}
 	
 	public KeyEvent getKeyEvent() {
-		return keyEvent;
+		return this.keyEvent;
 	}
 	
 	public boolean getKeyStatus(int key) {
-		return activeKeyCodes.contains(key);
+		return this.activeKeyCodes.contains(key);
 	}
 
 	KeyListener keyListener = new KeyListener() {
