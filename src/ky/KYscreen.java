@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public abstract class Screen extends JFrame {
+public abstract class KYscreen extends JFrame {
 	private static final long serialVersionUID = 1897229948652321731L;
 
 
@@ -43,10 +43,12 @@ public abstract class Screen extends JFrame {
 	private double referenceTime = 0;
 	private double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
 	
+	private Vector2D cameraPos = new Vector2D(0, 0);
+	
 	private KeyEvent keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED);
 	private ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
 	
-	public Screen(int width, int height, boolean resizable) {
+	public KYscreen(int width, int height, boolean resizable) {
 		this.setSize(width, height);
 		this.addKeyListener(keyListener);
 		this.addMouseListener(mouseListener);
@@ -59,7 +61,7 @@ public abstract class Screen extends JFrame {
 		run();
 	}
 	
-	public Screen(int width, int height, boolean resizable, int FPScap) {
+	public KYscreen(int width, int height, boolean resizable, int FPScap) {
 		this.setSize(width, height);
 		this.addKeyListener(keyListener);
 		this.addMouseListener(mouseListener);
@@ -113,7 +115,7 @@ public abstract class Screen extends JFrame {
 							for(Asset[] assetLayer : e.getAssets()) {
 								for(Asset a : assetLayer) {
 									if(a.isVisible()) {
-										offg.drawImage(a.getImage(), (int) Math.round(a.getX() + e.getX()), (int) Math.round(a.getY() + e.getY()), a.getWidth(), a.getHeight(), null);
+										offg.drawImage(a.getImage(), (int) Math.round(a.getX() + e.getX() - cameraPos.getX()), (int) Math.round(a.getY() + e.getY() - cameraPos.getY()), a.getWidth(), a.getHeight(), null);
 									}
 								}
 							}
@@ -129,7 +131,7 @@ public abstract class Screen extends JFrame {
 				if(allAssets[i].length != 0) {			// if asset layer is not empty
 					for(Asset a : allAssets[i]) {
 						if(a.isVisible()) {
-							offg.drawImage(a.getImage(), (int) Math.round(a.getX()), (int) Math.round(a.getY()), a.getWidth(), a.getHeight(), null);
+							offg.drawImage(a.getImage(), (int) Math.round(a.getX() - cameraPos.getX()), (int) Math.round(a.getY() - cameraPos.getY()), a.getWidth(), a.getHeight(), null);
 						}
 					}
 				}
@@ -141,6 +143,18 @@ public abstract class Screen extends JFrame {
 		}
 		g.drawImage(offscreen, 0, 0, this);
 		offg.dispose();
+	}
+	
+	public void setCameraPos(Vector2D position) {
+		this.cameraPos = position;
+	}
+	
+	public void setCameraPos(double x, double y) {
+		this.cameraPos.set(x, y);
+	}
+	
+	public Vector2D getCameraPos() {
+		return this.cameraPos;
 	}
 	
 	public void addAsset(Asset asset) {
@@ -168,7 +182,7 @@ public abstract class Screen extends JFrame {
 	}
 	
 	public double deltaT() {
-		return this.deltaT;
+		return this.deltaT / 1000;
 	}
 	
 	public KeyEvent getKeyEvent() {

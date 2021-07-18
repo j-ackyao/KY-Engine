@@ -11,7 +11,7 @@ public class Vector2D {
 	}
 	
 	public static Vector2D multiply(Vector2D v, double factor) {
-		Vector2D newVector = v;
+		Vector2D newVector = new Vector2D(v.getX(), v.getY());
 		newVector.multiply(factor);
 		return newVector;
 	}
