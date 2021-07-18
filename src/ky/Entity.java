@@ -9,16 +9,19 @@ public class Entity {
 	// below this comment is for the respective entity
 	
 	
-	private double x;
-	private double y;
+	private Vector2D position;
 	private boolean visible;
 	private int layer;
 	private ArrayList<ArrayList<Asset>> entityAssetLayers = new ArrayList<ArrayList<Asset>>(); // assets of entity (no render order)
 	
 	
 	public Entity(double x, double y, int layer) {
-		this.x = x;
-		this.y = y;
+		this.position = new Vector2D(x, y);
+		this.layer = layer;
+	}
+	
+	public Entity(Vector2D position, int layer) {
+		this.position = position;
 		this.layer = layer;
 	}
 	
@@ -66,30 +69,31 @@ public class Entity {
 		return converted;
 	}
 
-	public double[] getPos() {
-		return new double[]{this.x, this.y};
+	public Vector2D getPos() {
+		return this.position;
 	}
 	
 	public double getX() {
-		return this.x;
+		return this.position.getX();
 	}
 	
 	public double getY() {
-		return this.y;
+		return this.position.getY();
 	}
 	
 	public void setPos(double x, double y) {
-		this.x = x;
-		this.y = y;
+		this.position.set(x, y);
+	}
+	
+	public void setPos(Vector2D position) {
+		this.position = position;
 	}
 	
 	public void addPos(double x, double y) {
-		this.x += x;
-		this.y += y;
+		this.position.add(x, y);
 	}
 	
-	public void addPos(Vector2D displacementVector) {
-		this.x += displacementVector.getX();
-		this.y += displacementVector.getY();
+	public void addPos(Vector2D displacement) {
+		this.position.add(displacement);
 	}
 }
