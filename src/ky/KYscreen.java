@@ -1,5 +1,6 @@
 package ky;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -38,6 +39,7 @@ public abstract class KYscreen extends JFrame {
 	
 	private Image offscreen;
 	private Graphics offg;
+	private Dimension windowOffset;
 	
 	private double mspf = 0; // milliseconds per frame
 	private double referenceTime = 0;
@@ -49,7 +51,11 @@ public abstract class KYscreen extends JFrame {
 	private ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
 	
 	public KYscreen(int width, int height, boolean resizable) {
-		this.setSize(width, height);
+		this.getContentPane().setPreferredSize(new Dimension(width, height));
+		this.pack();
+		
+		this.windowOffset = new Dimension(this.getWidth() - this.getContentPane().getWidth(), this.getHeight() - this.getContentPane().getHeight());
+		
 		this.addKeyListener(keyListener);
 		this.addMouseListener(mouseListener);
 		this.setResizable(resizable);
@@ -62,7 +68,11 @@ public abstract class KYscreen extends JFrame {
 	}
 	
 	public KYscreen(int width, int height, boolean resizable, int FPScap) {
-		this.setSize(width, height);
+		this.getContentPane().setPreferredSize(new Dimension(width, height));
+		this.pack();
+
+		this.windowOffset = new Dimension(this.getWidth() - this.getContentPane().getWidth(), this.getHeight() - this.getContentPane().getHeight());
+		
 		this.addKeyListener(keyListener);
 		this.addMouseListener(mouseListener);
 		this.setResizable(resizable);
@@ -75,6 +85,7 @@ public abstract class KYscreen extends JFrame {
 			System.out.println("Invalid FPS cap, no FPS cap will be set.");
 		}
 		referenceTime = System.currentTimeMillis();
+		
 		
 		start();
 		run();
@@ -89,7 +100,18 @@ public abstract class KYscreen extends JFrame {
 			if(System.currentTimeMillis() - referenceTime > mspf) {
 				deltaT = System.currentTimeMillis() - referenceTime;
 				referenceTime = System.currentTimeMillis();
+				
 				update();
+				
+				// Other logic and calculations done here
+				for(Entity[] entityLayers : getEntities()) {
+					for(Entity e : entityLayers) {
+						e.position.add(Vector2D.multiply(e.velocity, deltaT()));
+					}
+				}
+				
+				
+				
 				render(getGraphics());
 			}
 		}
@@ -107,7 +129,7 @@ public abstract class KYscreen extends JFrame {
 		boolean renderEntities = true;
 		int i = 0;										// this acts as the index for the layers, goes through all the layers to render
 		
-		while(renderAssets && renderEntities) {			// acts like a "for loop," stops when either entities or assets have been rendered 
+		while(renderAssets || renderEntities) {			// acts like a "for loop," stops when either entities or assets have been rendered 
 			if(i < allEntities.length) {
 				if(allEntities[i].length != 0) {		// if entity layer is not empty
 					for(Entity e : allEntities[i]) {
@@ -115,7 +137,9 @@ public abstract class KYscreen extends JFrame {
 							for(Asset[] assetLayer : e.getAssets()) {
 								for(Asset a : assetLayer) {
 									if(a.isVisible()) {
-										offg.drawImage(a.getImage(), (int) Math.round(a.getX() + e.getX() - cameraPos.getX()), (int) Math.round(a.getY() + e.getY() - cameraPos.getY()), a.getWidth(), a.getHeight(), null);
+										double renderXPos = a.getX() - (double) a.getWidth()/2 + e.getX() - cameraPos.getX();
+										double renderYPos = a.getY() - (double) a.getHeight()/2 + e.getY() - cameraPos.getY();
+										offg.drawImage(a.getImage(), (int) Math.round(renderXPos), (int) Math.round(renderYPos), a.getWidth(), a.getHeight(), null);
 									}
 								}
 							}
@@ -131,7 +155,9 @@ public abstract class KYscreen extends JFrame {
 				if(allAssets[i].length != 0) {			// if asset layer is not empty
 					for(Asset a : allAssets[i]) {
 						if(a.isVisible()) {
-							offg.drawImage(a.getImage(), (int) Math.round(a.getX() - cameraPos.getX()), (int) Math.round(a.getY() - cameraPos.getY()), a.getWidth(), a.getHeight(), null);
+							double renderXPos = a.getX() - (double) a.getWidth()/2 - cameraPos.getX();
+							double renderYPos = a.getY() - (double) a.getHeight()/2 - cameraPos.getY();
+							offg.drawImage(a.getImage(), (int) Math.round(renderXPos), (int) Math.round(renderYPos), a.getWidth(), a.getHeight(), null);
 						}
 					}
 				}

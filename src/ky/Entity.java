@@ -9,7 +9,9 @@ public class Entity {
 	// below this comment is for the respective entity
 	
 	
-	private Vector2D position;
+	public Vector2D position;
+	public Vector2D velocity;
+	private String name;
 	private boolean visible;
 	private int layer;
 	private ArrayList<ArrayList<Asset>> entityAssetLayers = new ArrayList<ArrayList<Asset>>(); // assets of entity (no render order)
@@ -17,12 +19,28 @@ public class Entity {
 	
 	public Entity(double x, double y, int layer) {
 		this.position = new Vector2D(x, y);
+		this.velocity = new Vector2D(0, 0);
 		this.layer = layer;
 	}
 	
 	public Entity(Vector2D position, int layer) {
 		this.position = position;
+		this.velocity = new Vector2D(0, 0);
 		this.layer = layer;
+	}
+	
+	public Entity(double x, double y, int layer, String name) {
+		this.position = new Vector2D(x, y);
+		this.velocity = new Vector2D(0, 0);
+		this.layer = layer;
+		this.name = name;
+	}
+	
+	public Entity(Vector2D position, int layer, String name) {
+		this.position = position;
+		this.velocity = new Vector2D(0, 0);
+		this.layer = layer;
+		this.name = name;
 	}
 	
 	// adds the assets to layers according to index (zero based indexing, 0 being bottom)
@@ -79,6 +97,10 @@ public class Entity {
 	
 	public double getY() {
 		return this.position.getY();
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	public void setPos(double x, double y) {
