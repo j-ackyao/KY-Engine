@@ -59,38 +59,39 @@ public class Main extends KYscreen {
 	@Override
 	public void update() {
 		
-		nyaentity.velocity.set(0, 0);
-		test.velocity.set(0, 0);
+		nyaentity.setVel(0, 0);
+		test.setVel(0, 0);
 		
 		
 		if(getKeyStatus(KeyEvent.VK_W)) {
-			nyaentity.velocity.add(0, -1 * speed);
+			nyaentity.addVel(0, -1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_S)) {
-			nyaentity.velocity.add(0, 1 * speed);
+			nyaentity.addVel(0, 1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_A)) {
-			nyaentity.velocity.add(-1 * speed, 0);
+			nyaentity.addVel(-1 * speed, 0);
 		}
 		if(getKeyStatus(KeyEvent.VK_D)) {
-			nyaentity.velocity.add(1 * speed, 0);
+			nyaentity.addVel(1 * speed, 0);
 		}
 		if(getKeyStatus(KeyEvent.VK_F)) {
 			nyaentity.getAsset("nya").animate();
 		}
 		
 		if(getKeyStatus(KeyEvent.VK_UP)) {
-			test.velocity.add(0, -1 * speed);
+			test.addVel(0, -1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_DOWN)) {
-			test.velocity.add(0, 1 * speed);
+			test.addVel(0, 1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_LEFT)) {
-			test.velocity.add(-1 * speed, 0);
+			test.addVel(-1 * speed, 0);
 		}
 		if(getKeyStatus(KeyEvent.VK_RIGHT)) {
-			test.velocity.add(1 * speed, 0);
+			test.addVel(1 * speed, 0);
 		}
+		
 		
 		if(getKeyStatus(KeyEvent.VK_Q) && rescaled == false) {
 			rescaled = true;

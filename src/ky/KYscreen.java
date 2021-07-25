@@ -72,6 +72,7 @@ public abstract class KYscreen extends JFrame {
 		this.pack();
 
 		this.windowOffset = new Dimension(this.getWidth() - this.getContentPane().getWidth(), this.getHeight() - this.getContentPane().getHeight());
+		System.out.println(windowOffset.height);
 		
 		this.addKeyListener(keyListener);
 		this.addMouseListener(mouseListener);
@@ -103,12 +104,6 @@ public abstract class KYscreen extends JFrame {
 				
 				update();
 				
-				// Other logic and calculations done here
-				for(Entity[] entityLayers : getEntities()) {
-					for(Entity e : entityLayers) {
-						e.position.add(Vector2D.multiply(e.velocity, deltaT()));
-					}
-				}
 				
 				
 				
@@ -137,8 +132,8 @@ public abstract class KYscreen extends JFrame {
 							for(Asset[] assetLayer : e.getAssets()) {
 								for(Asset a : assetLayer) {
 									if(a.isVisible()) {
-										double renderXPos = a.getX() - (double) a.getWidth()/2 + e.getX() - cameraPos.getX();
-										double renderYPos = a.getY() - (double) a.getHeight()/2 + e.getY() - cameraPos.getY();
+										double renderXPos = a.getX() - (double) a.getWidth()/2 + e.getX() - cameraPos.getX() + windowOffset.width;
+										double renderYPos = a.getY() - (double) a.getHeight()/2 + e.getY() - cameraPos.getY() + windowOffset.height;
 										offg.drawImage(a.getImage(), (int) Math.round(renderXPos), (int) Math.round(renderYPos), a.getWidth(), a.getHeight(), null);
 									}
 								}

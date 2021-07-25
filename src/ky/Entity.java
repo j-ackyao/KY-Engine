@@ -9,8 +9,8 @@ public class Entity {
 	// below this comment is for the respective entity
 	
 	
-	public Vector2D position;
-	public Vector2D velocity;
+	private Vector2D position;
+	private Vector2D velocity;
 	private String name;
 	private boolean visible;
 	private int layer;
@@ -88,15 +88,19 @@ public class Entity {
 	}
 
 	public Vector2D getPos() {
-		return this.position;
+		return this.position.clone();
 	}
 	
 	public double getX() {
-		return this.position.getX();
+		return this.position.clone().getX();
 	}
 	
 	public double getY() {
-		return this.position.getY();
+		return this.position.clone().getY();
+	}
+	
+	public Vector2D getVel() {
+		return this.position.clone();
 	}
 	
 	public String getName() {
@@ -117,5 +121,21 @@ public class Entity {
 	
 	public void addPos(Vector2D displacement) {
 		this.position.add(displacement);
+	}
+	
+	public void setVel(double x, double y) {
+		this.velocity.set(x, y);
+	}
+	
+	public void setVel(Vector2D velocity) {
+		this.velocity = velocity;
+	}
+	
+	public void addVel(double x, double y) {
+		this.velocity.add(x, y);
+	}
+	
+	public void addVel(Vector2D deltaV) {
+		this.velocity.add(deltaV);
 	}
 }

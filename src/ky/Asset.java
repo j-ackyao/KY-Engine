@@ -268,15 +268,15 @@ public class Asset {
 	}
 	
 	public Vector2D getPos() {
-		return this.position;
+		return this.position.clone();
 	}
 	
 	public double getX() {
-		return this.position.getX();
+		return this.position.clone().getX();
 	}
 	
 	public double getY() {
-		return this.position.getY();
+		return this.position.clone().getY();
 	}
 	
 	public int[] getDimensions() {
