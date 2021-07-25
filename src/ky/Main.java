@@ -12,20 +12,12 @@ public class Main extends KYscreen {
 	}
 
 	public static void main(String[] args) {
-		
-		Vector2D vector = new Vector2D(1, 1);
-		vector.add(new Vector2D(0,-2));
-		System.out.println(vector.toString());
-		System.out.println(vector.getMagnitude());
-		System.out.println(vector.getAngle());
-		
-		
-		new Main(720, 664, true, 60);
+		new Main(1000,1000, false, 60);
 	}
 
-	public Entity nyaentity;
-	public Vector2D velocity;
-	public double speed;
+	Entity nyaentity;
+	Entity test;
+	double speed;
 	Asset background;
 	Asset nya;
 	
@@ -34,68 +26,81 @@ public class Main extends KYscreen {
 	@Override
 	public void start() {
 
-		velocity = new Vector2D(0, 0);
-		speed = 200;
+		speed = 500;
 		
 		String[] group = {"nya.png","ichi.png","ni.png","san.png", "nya.png", "arigatou.png"};
 		nya = new Asset(group, new Vector2D(0, 0), 1, 0, "nya");
 		nya.rescale(0.2);
-		nya.setPos((double) -nya.getWidth()/2, (double) -nya.getHeight()/2);
 		nya.setVisible(true);
 		
-		nyaentity = new Entity(100, 100, 1);
+		nyaentity = new Entity(500, 500, 2, "nya");
 		nyaentity.addAsset(nya);
 		nyaentity.setVisible(true);
 		addEntity(nyaentity);
 		
-		background = new Asset("background.png", new Vector2D(0, 0), 0);
-		background.rescale(664 / background.getHeight());
+		test = new Entity(0, 0, 1, "nya");
+		Asset testAsset = new Asset("test.png", new Vector2D(0, 0), 0, "test");
+		testAsset.rescale(0.25);
+		testAsset.setVisible(true);
+		test.addAsset(testAsset);
+		test.setVisible(true);
+		addEntity(test);
+		
+		background = new Asset("background.png", new Vector2D(0, 100), 0);
+		background.setPos(getWidth()/2, getHeight()/2);
+		//background.rescale(664 / background.getHeight());
 		background.setVisible(true);
 		addAsset(background);
+		
 	}
 	
+	boolean rescaled = false;
 	
 	@Override
 	public void update() {
-
 		
+		nyaentity.velocity.set(0, 0);
+		test.velocity.set(0, 0);
 		
-		velocity.set(0, velocity.getY());
-		
-		velocity.add(0, 20);
-		
-		if(nyaentity.getY() > 300) {
-			velocity.set(0, 0);
-		}
 		
 		if(getKeyStatus(KeyEvent.VK_W)) {
-			velocity.add(0, -1 * speed);
+			nyaentity.velocity.add(0, -1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_S)) {
-			velocity.add(0, 1 * speed);
+			nyaentity.velocity.add(0, 1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_A)) {
-			velocity.add(-1 * speed, 0);
+			nyaentity.velocity.add(-1 * speed, 0);
 		}
 		if(getKeyStatus(KeyEvent.VK_D)) {
-			velocity.add(1 * speed, 0);
+			nyaentity.velocity.add(1 * speed, 0);
 		}
 		if(getKeyStatus(KeyEvent.VK_F)) {
 			nyaentity.getAsset("nya").animate();
 		}
-		if(getKeyStatus(KeyEvent.VK_Q)) {
-			nyaentity.setVisible(!nyaentity.isVisible());
+		
+		if(getKeyStatus(KeyEvent.VK_UP)) {
+			test.velocity.add(0, -1 * speed);
 		}
-
-		if(getKeyStatus(KeyEvent.VK_SPACE) && !jumped) {
-			System.out.println("jumped");
-			jumped = true;
-			velocity.set(velocity.getX(), -500);
+		if(getKeyStatus(KeyEvent.VK_DOWN)) {
+			test.velocity.add(0, 1 * speed);
 		}
-		else if(!getKeyStatus(KeyEvent.VK_SPACE) && jumped) {
-			System.out.println("no jump");
-			jumped = false;
-			
+		if(getKeyStatus(KeyEvent.VK_LEFT)) {
+			test.velocity.add(-1 * speed, 0);
+		}
+		if(getKeyStatus(KeyEvent.VK_RIGHT)) {
+			test.velocity.add(1 * speed, 0);
+		}
+		
+		if(getKeyStatus(KeyEvent.VK_Q) && rescaled == false) {
+			rescaled = true;
+			background.rescale(2);
+			test.getAsset("test").rescale(2);
+		}
+		if(!getKeyStatus(KeyEvent.VK_Q) && rescaled != false) {
+			rescaled = false;
+			background.rescale(0.5);
+			test.getAsset("test").rescale(0.5);
 		}
 		
 		/*
@@ -108,16 +113,9 @@ public class Main extends KYscreen {
 		}
 		*/
 		
-		if(getKeyStatus(KeyEvent.VK_Q)) {
-			nyaentity.setVisible(!nyaentity.isVisible());
-		}
+		//setCameraPos(Vector2D.subtract(nyaentity.getPos(), new Vector2D(getWidth()/2, getHeight()/2)));
 		
-		nyaentity.addPos(Vector2D.multiply(velocity, deltaT()));
-		System.out.println(1/deltaT());
-		
-		setCameraPos(Vector2D.subtract(nyaentity.getPos(), new Vector2D(getWidth()/2, getHeight()/2)));
-		
-		//System.out.println(nyaentity.getPos().toString());
+		//System.out.println(nyaentity.velocity.toString());
 		//System.out.println(velocity.getX() + ", " + velocity.getY());
 	}
 }
