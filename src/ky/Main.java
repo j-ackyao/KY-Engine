@@ -36,7 +36,7 @@ public class Main extends KYscreen {
 		nyaentity = new Entity(500, 500, 2, "nya");
 		nyaentity.addAsset(nya);
 		nyaentity.setVisible(true);
-		addEntity(nyaentity);
+//		addEntity(nyaentity);
 		
 		test = new Entity(0, 0, 1, "nya");
 		Asset testAsset = new Asset("test.png", new Vector2D(0, 0), 0, "test");
@@ -44,14 +44,13 @@ public class Main extends KYscreen {
 		testAsset.setVisible(true);
 		test.addAsset(testAsset);
 		test.setVisible(true);
-		addEntity(test);
+//		addEntity(test);
 		
 		background = new Asset("background.png", new Vector2D(0, 100), 0);
 		background.setPos(getWidth()/2, getHeight()/2);
 		//background.rescale(664 / background.getHeight());
 		background.setVisible(true);
 		addAsset(background);
-		
 	}
 	
 	boolean rescaled = false;

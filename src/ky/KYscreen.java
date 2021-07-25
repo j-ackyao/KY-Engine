@@ -107,6 +107,7 @@ public abstract class KYscreen extends JFrame {
 				for(Entity[] entityLayers : getEntities()) {
 					for(Entity e : entityLayers) {
 						e.position.add(Vector2D.multiply(e.velocity, deltaT()));
+						e.update(deltaT);
 					}
 				}
 				

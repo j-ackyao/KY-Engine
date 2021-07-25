@@ -118,4 +118,8 @@ public class Entity {
 	public void addPos(Vector2D displacement) {
 		this.position.add(displacement);
 	}
+	
+	public void update(double deltaTime) {
+		System.out.println("Entity update");
+	}
 }
