@@ -32,6 +32,10 @@ public class Vector2D {
 		this.y = y;
 	}
 	
+	public Vector2D clone() {
+		return new Vector2D(this.x, this.y);
+	}
+	
 	public double getX() {
 		return this.x;
 	}
