@@ -32,7 +32,7 @@ public class Asset {
 		return images;
 	}
 	
-	private static BufferedImage getMissing() {
+	public static BufferedImage getMissing() {
 		try {
 			return ImageIO.read(new File("missing.png"));
 		} catch (IOException missingFallbackTexture) {
@@ -45,8 +45,7 @@ public class Asset {
 	// below this comment is for the respective asset
 	
 	private Vector2D position;
-	private int width;
-	private int height;
+	private int width, height;
 	private BufferedImage image = null; // sprite of asset
 	private BufferedImage[] images = null; // sprites of asset if animated
 	private String name = ""; // asset's name
@@ -94,7 +93,7 @@ public class Asset {
 	
 	public Asset(BufferedImage[] images, Vector2D position, double animationTime, int layer) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / images.length;
+		this.animationTime = animationTime * (double) 1000 / images.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.image = images[0];
 		this.images = images;
@@ -106,7 +105,7 @@ public class Asset {
 	
 	public Asset(BufferedImage[] images, Vector2D position, int width, int height, double animationTime, int layer) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / images.length;
+		this.animationTime = animationTime * (double) 1000 / images.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.image = images[0];
 		this.images = images;
@@ -118,7 +117,7 @@ public class Asset {
 	
 	public Asset(BufferedImage[] images, Vector2D position, double animationTime, int layer, String name) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / images.length;
+		this.animationTime = animationTime * (double) 1000 / images.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.name = name;
 		this.image = images[0];
@@ -131,7 +130,7 @@ public class Asset {
 	
 	public Asset(BufferedImage[] images, Vector2D position, int width, int height, double animationTime, int layer, String name) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / images.length;
+		this.animationTime = animationTime * (double) 1000 / images.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.name = name;
 		this.image = images[0];
@@ -178,7 +177,7 @@ public class Asset {
 	
 	public Asset(String[] filenames, Vector2D position, double animationTime, int layer) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / filenames.length;
+		this.animationTime = animationTime * (double) 1000 / filenames.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.images = readImage(filenames);
 		this.image = this.images[0];
@@ -190,7 +189,7 @@ public class Asset {
 	
 	public Asset(String[] filenames, Vector2D position, int width, int height, double animationTime, int layer) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / filenames.length;
+		this.animationTime = animationTime * (double) 1000 / filenames.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.images = readImage(filenames);
 		this.image = this.images[0];
@@ -202,7 +201,7 @@ public class Asset {
 	
 	public Asset(String[] filenames, Vector2D position, double animationTime, int layer, String name) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / filenames.length;
+		this.animationTime = animationTime * (double) 1000 / filenames.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.name = name;
 		this.images = readImage(filenames);
@@ -215,7 +214,7 @@ public class Asset {
 	
 	public Asset(String[] filenames, Vector2D position, int width, int height, double animationTime, int layer, String name) {
 		this.animated = true;
-		this.animationTime = animationTime * 1000 / filenames.length;
+		this.animationTime = animationTime * (double) 1000 / filenames.length;
 		this.animationReferenceTime = System.currentTimeMillis();
 		this.name = name;
 		this.images = readImage(filenames);
@@ -328,6 +327,4 @@ public class Asset {
 	public BufferedImage[] getImages() {
 		return this.images;
 	}
-	
-	
 }

@@ -1,5 +1,6 @@
 package ky;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -15,12 +16,14 @@ public abstract class KYscreen extends JFrame {
 	private static final long serialVersionUID = 1897229948652321731L;
 
 
-	private static ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
+	private ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
 																								// assets within layers do not have render priorities
 	   																							// between them
-	private static ArrayList<ArrayList<Entity>> entityLayers = new ArrayList<ArrayList<Entity>>(); // holds all the entities to be rendered
+	private ArrayList<ArrayList<Entity>> entityLayers = new ArrayList<ArrayList<Entity>>(); // holds all the entities to be rendered
 	
-	public static Entity[][] getEntities(){
+	private ArrayList<CollisionEntity> collisionEntities = new ArrayList<CollisionEntity>(); // holds all collision entities to handle collisions easier
+	
+	public Entity[][] getEntityLayers(){
 		Entity[][] converted = new Entity[entityLayers.size()][];
 		for(int i = 0; i < entityLayers.size(); i++) {
 			converted[i] = entityLayers.get(i).toArray(new Entity[entityLayers.get(i).size()]);
@@ -28,7 +31,7 @@ public abstract class KYscreen extends JFrame {
 		return converted;
 	}
 	
-	public static Asset[][] getAssets(){ // gets all assets whilst keeping the layers
+	public Asset[][] getAssetLayers(){ // gets all assets whilst keeping the layers
 		Asset[][] converted = new Asset[assetLayers.size()][];
 		for(int i = 0; i < assetLayers.size(); i++) {
 			converted[i] = assetLayers.get(i).toArray(new Asset[assetLayers.get(i).size()]);
@@ -36,10 +39,13 @@ public abstract class KYscreen extends JFrame {
 		return converted;
 	}
 	
+	public CollisionEntity[] getCollisionEntities() {
+		return collisionEntities.toArray(new CollisionEntity[collisionEntities.size()]);
+	}
+	
 	
 	private Image offscreen;
 	private Graphics offg;
-	private Dimension windowOffset;
 	
 	private double mspf = 0; // milliseconds per frame
 	private double referenceTime = 0;
@@ -54,7 +60,7 @@ public abstract class KYscreen extends JFrame {
 		this.getContentPane().setPreferredSize(new Dimension(width, height));
 		this.pack();
 		
-		this.windowOffset = new Dimension(this.getWidth() - this.getContentPane().getWidth(), this.getHeight() - this.getContentPane().getHeight());
+		//this.windowOffset = new Dimension(this.getWidth() - this.getContentPane().getWidth(), this.getHeight() - this.getContentPane().getHeight());
 		
 		this.addKeyListener(keyListener);
 		this.addMouseListener(mouseListener);
@@ -71,18 +77,18 @@ public abstract class KYscreen extends JFrame {
 		this.getContentPane().setPreferredSize(new Dimension(width, height));
 		this.pack();
 
-		this.windowOffset = new Dimension(this.getWidth() - this.getContentPane().getWidth(), this.getHeight() - this.getContentPane().getHeight());
-		System.out.println(windowOffset.height);
+		//this.windowOffset = new Dimension(this.getWidth() - this.getContentPane().getWidth(), this.getHeight() - this.getContentPane().getHeight());
+		//System.out.println(windowOffset.height);
 		
 		this.addKeyListener(keyListener);
 		this.addMouseListener(mouseListener);
 		this.setResizable(resizable);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		try {
-			mspf = 1000 / FPScap;
+		if (FPScap > 0) {
+			mspf = (double) 1000 / FPScap;
 		}
-		catch(ArithmeticException | IllegalArgumentException e) {
+		else {
 			System.out.println("Invalid FPS cap, no FPS cap will be set.");
 		}
 		referenceTime = System.currentTimeMillis();
@@ -94,18 +100,31 @@ public abstract class KYscreen extends JFrame {
 	
 	public abstract void start();
 	
-	public abstract void update();
+	public abstract void update(double deltaT);
+	
+	public void updateEntities() {
+		for(Entity[] entityLayer : getEntityLayers()) {
+			for(Entity e : entityLayer) {
+				e.update(deltaT);
+				if(e instanceof CollisionEntity) {
+					((CollisionEntity) e).updateCollision(getCollisionEntities(), deltaT);
+				}
+				e.addPos(Vector2D.multiply(e.getVel(), deltaT));
+			}
+		}
+	}
 	
 	private void run() {
 		while(isVisible()) {
 			if(System.currentTimeMillis() - referenceTime > mspf) {
-				deltaT = System.currentTimeMillis() - referenceTime;
+				deltaT = (double) (System.currentTimeMillis() - referenceTime) / 1000;
 				referenceTime = System.currentTimeMillis();
 				
-				update();
 				
+				update(deltaT);
 				
-				
+				updateEntities();
+
 				
 				render(getGraphics());
 			}
@@ -118,8 +137,8 @@ public abstract class KYscreen extends JFrame {
 		offscreen = createImage(getWidth(), getHeight());
 		offg = offscreen.getGraphics();
 
-		Entity[][] allEntities = getEntities();	// retrieve all our entities
-		Asset[][] allAssets = getAssets();		// retrieve all our assets
+		Entity[][] allEntities = getEntityLayers();	// retrieve all our entities
+		Asset[][] allAssets = getAssetLayers();		// retrieve all our assets
 		boolean renderAssets = true;
 		boolean renderEntities = true;
 		int i = 0;										// this acts as the index for the layers, goes through all the layers to render
@@ -132,10 +151,23 @@ public abstract class KYscreen extends JFrame {
 							for(Asset[] assetLayer : e.getAssets()) {
 								for(Asset a : assetLayer) {
 									if(a.isVisible()) {
-										double renderXPos = a.getX() - (double) a.getWidth()/2 + e.getX() - cameraPos.getX() + windowOffset.width;
-										double renderYPos = a.getY() - (double) a.getHeight()/2 + e.getY() - cameraPos.getY() + windowOffset.height;
-										offg.drawImage(a.getImage(), (int) Math.round(renderXPos), (int) Math.round(renderYPos), a.getWidth(), a.getHeight(), null);
+										int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 + e.getX() - cameraPos.getX());
+										int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 + e.getY() - cameraPos.getY());
+										offg.drawImage(a.getImage(), renderXPos, renderYPos, a.getWidth(), a.getHeight(), null);
 									}
+								}
+							}
+							if(e instanceof CollisionEntity) {
+								if(((CollisionEntity) e).getCollisionBoxVisibility()) {
+									CollisionBox cb = ((CollisionEntity) e).getCollisionBox();
+									CollisionBox xb = ((CollisionEntity) e).getXCollisionBox();
+									CollisionBox yb = ((CollisionEntity) e).getYCollisionBox();
+									offg.setColor(Color.black);
+									offg.drawRect(cb.x, cb.y, cb.width, cb.height);
+									offg.setColor(Color.red);
+									offg.drawRect(xb.x, xb.y, xb.width, xb.height);
+									offg.setColor(Color.blue);
+									offg.drawRect(yb.x, yb.y, yb.width, yb.height);
 								}
 							}
 						}
@@ -191,6 +223,7 @@ public abstract class KYscreen extends JFrame {
 	}
 	
 	public void addEntity(Entity entity) {
+		
 		int difference = entity.getLayer() + 1 - entityLayers.size();// check if the indicated layer exists or not
 		if(difference > 0) { 							// if difference is greater than 0,
 			for(int i = 0; i < difference; i++) {		// there needs to be filler layers to reach the indicated layer
@@ -200,10 +233,12 @@ public abstract class KYscreen extends JFrame {
 		if(!entityLayers.get(entity.getLayer()).contains(entity)) { // add to layer
 			entityLayers.get(entity.getLayer()).add(entity);
 		}
-	}
-	
-	public double deltaT() {
-		return this.deltaT / 1000;
+		
+		// this keeps track of all collision entities
+		if(entity instanceof CollisionEntity && !collisionEntities.contains(entity)) {
+			collisionEntities.add((CollisionEntity) entity);
+			//((CollisionEntity) entity).onCollision();
+		}
 	}
 	
 	public KeyEvent getKeyEvent() {
