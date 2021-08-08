@@ -12,11 +12,12 @@ public class Main extends KYscreen {
 	}
 
 	public static void main(String[] args) {
-		new Main(1000,1000, false, 60);
+		new Main(1000, 1000, false, 20);
 	}
 
-	Entity nyaentity;
-	Entity test;
+	CollisionEntity nyaentity;
+	CollisionEntity test;
+	CollisionEntity blank;
 	double speed;
 	Asset background;
 	Asset nya;
@@ -25,43 +26,45 @@ public class Main extends KYscreen {
 	
 	@Override
 	public void start() {
-
-		speed = 500;
+		
+		speed = 1000;
 		
 		String[] group = {"nya.png","ichi.png","ni.png","san.png", "nya.png", "arigatou.png"};
 		nya = new Asset(group, new Vector2D(0, 0), 1, 0, "nya");
 		nya.rescale(0.2);
 		nya.setVisible(true);
 		
-		nyaentity = new Entity(500, 500, 2, "nya");
+		
+		nyaentity = new CollisionEntity(200, 0, 200, 200, 2, false, "nya");
 		nyaentity.addAsset(nya);
 		nyaentity.setVisible(true);
 		addEntity(nyaentity);
 		
-		test = new Entity(0, 0, 1, "nya");
-		Asset testAsset = new Asset("test.png", new Vector2D(0, 0), 0, "test");
-		testAsset.rescale(0.25);
-		testAsset.setVisible(true);
-		test.addAsset(testAsset);
-		test.setVisible(true);
+		test = new _TestCollisionEntity();
+		test.addAsset(test.getAsset("test"));
 		addEntity(test);
+		
+		
+		// collision debugging
+		test.setCollisionBoxVisibility(true);
+		nyaentity.setCollisionBoxVisibility(true);
+		
+		// ===============
 		
 		background = new Asset("background.png", new Vector2D(0, 100), 0);
 		background.setPos(getWidth()/2, getHeight()/2);
 		//background.rescale(664 / background.getHeight());
 		background.setVisible(true);
 		addAsset(background);
-		
 	}
 	
 	boolean rescaled = false;
 	
 	@Override
-	public void update() {
+	public void update(double deltaT) {
 		
 		nyaentity.setVel(0, 0);
 		test.setVel(0, 0);
-		
 		
 		if(getKeyStatus(KeyEvent.VK_W)) {
 			nyaentity.addVel(0, -1 * speed);
@@ -97,26 +100,13 @@ public class Main extends KYscreen {
 			rescaled = true;
 			background.rescale(2);
 			test.getAsset("test").rescale(2);
+			nyaentity.getAsset("nya").rescale(2);
 		}
 		if(!getKeyStatus(KeyEvent.VK_Q) && rescaled != false) {
 			rescaled = false;
 			background.rescale(0.5);
 			test.getAsset("test").rescale(0.5);
+			nyaentity.getAsset("nya").rescale(0.5);
 		}
-		
-		/*
-		if(getKeyStatus(KeyEvent.VK_LEFT)) {
-			setCameraPos(getCameraPos().getX() - 10, 0);
-		}
-		
-		if(getKeyStatus(KeyEvent.VK_RIGHT)) {
-			setCameraPos(getCameraPos().getX() + 10, 0);
-		}
-		*/
-		
-		//setCameraPos(Vector2D.subtract(nyaentity.getPos(), new Vector2D(getWidth()/2, getHeight()/2)));
-		
-		//System.out.println(nyaentity.velocity.toString());
-		//System.out.println(velocity.getX() + ", " + velocity.getY());
 	}
 }

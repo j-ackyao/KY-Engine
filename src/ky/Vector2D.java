@@ -17,7 +17,7 @@ public class Vector2D {
 	}
 	
 	public static double multiply(Vector2D a, Vector2D b) { // dot multiplication
-		return a.getX() * b.getX() + a.getY() + b.getY();
+		return a.getX() * b.getX() + a.getY() * b.getY();
 	}
 	
 	public static Vector2D invert(Vector2D v) {

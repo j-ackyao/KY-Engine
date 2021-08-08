@@ -9,36 +9,32 @@ public class Entity {
 	// below this comment is for the respective entity
 	
 	
-	private Vector2D position;
-	private Vector2D velocity;
+	private Vector2D position, velocity = new Vector2D(0, 0);
+	private double rotation = 0;
 	private String name;
-	private boolean visible;
+	private boolean visible = false;
 	private int layer;
 	private ArrayList<ArrayList<Asset>> entityAssetLayers = new ArrayList<ArrayList<Asset>>(); // assets of entity (no render order)
 	
 	
 	public Entity(double x, double y, int layer) {
 		this.position = new Vector2D(x, y);
-		this.velocity = new Vector2D(0, 0);
 		this.layer = layer;
 	}
 	
 	public Entity(Vector2D position, int layer) {
 		this.position = position;
-		this.velocity = new Vector2D(0, 0);
 		this.layer = layer;
 	}
 	
 	public Entity(double x, double y, int layer, String name) {
 		this.position = new Vector2D(x, y);
-		this.velocity = new Vector2D(0, 0);
 		this.layer = layer;
 		this.name = name;
 	}
 	
 	public Entity(Vector2D position, int layer, String name) {
 		this.position = position;
-		this.velocity = new Vector2D(0, 0);
 		this.layer = layer;
 		this.name = name;
 	}
@@ -100,7 +96,11 @@ public class Entity {
 	}
 	
 	public Vector2D getVel() {
-		return this.position.clone();
+		return this.velocity.clone();
+	}
+	
+	public double getRotation() {
+		return this.rotation;
 	}
 	
 	public String getName() {
@@ -137,5 +137,13 @@ public class Entity {
 	
 	public void addVel(Vector2D deltaV) {
 		this.velocity.add(deltaV);
+	}
+	
+	public void setRotation(double rot) {
+		this.rotation = rot;
+	}
+	
+	public void update(double deltaT) {
+		
 	}
 }
