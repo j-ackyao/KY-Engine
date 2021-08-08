@@ -94,7 +94,7 @@ public class CollisionEntity extends Entity {
 						} else {
 							setPos(collidingEntityXCollisionBox.getMaxX() + this.collisionBox.getWidth() / 2, getY());
 						}
-						setVel(0, getVel().getY());
+						setVel(collidingEntity.getVel().getX(), getVel().getY());
 						this.collidingEntities.add(collidingEntity);
 					}
 
@@ -102,9 +102,9 @@ public class CollisionEntity extends Entity {
 						if (getY() < collidingEntity.getY()) { // this entity is above collidingEntity
 							setPos(getX(), collidingEntityYCollisionBox.getMinY() - this.collisionBox.getHeight() / 2);
 						} else {
-							setPos(getX(), collidingEntityYCollisionBox.getMaxY() + this.collisionBox.getWidth() / 2);
+							setPos(getX(), collidingEntityYCollisionBox.getMaxY() + this.collisionBox.getHeight() / 2);
 						}
-						setVel(getVel().getX(), 0);
+						setVel(getVel().getX(), collidingEntity.getVel().getY());
 						this.collidingEntities.add(collidingEntity);
 					}
 				}
@@ -140,8 +140,8 @@ public class CollisionEntity extends Entity {
 	}
 	
 	@Override
-	public void update(double deltaT) {
-		
+	public void update(double deltaT, ArrayList<Integer> keyCodes) {
+
 	}
 	
 }

@@ -296,6 +296,19 @@ public class Asset {
 		return this.name;
 	}
 	
+	public Asset clone() {
+		Asset clone;
+		if(this.isAnimated()) {
+			clone = new Asset(this.images, getPos(), getWidth(), getHeight(), this.animationTime, this.layer, this.name);
+		}
+		else {
+			clone = new Asset(this.image, getPos(), getWidth(), getHeight(), this.layer, this.name);
+		}
+		clone.setVisible(this.visible);
+		
+		return clone; 
+	}
+	
 	
 	public BufferedImage getImage() {
 		if (animated && animating) {

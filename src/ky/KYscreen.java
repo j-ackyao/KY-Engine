@@ -53,7 +53,6 @@ public abstract class KYscreen extends JFrame {
 	
 	private Vector2D cameraPos = new Vector2D(0, 0);
 	
-	private KeyEvent keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_UNDEFINED, KeyEvent.CHAR_UNDEFINED);
 	private ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
 	
 	public KYscreen(int width, int height, boolean resizable) {
@@ -104,8 +103,9 @@ public abstract class KYscreen extends JFrame {
 	
 	public void updateEntities() {
 		for(Entity[] entityLayer : getEntityLayers()) {
+			ArrayList<Integer> clonedKeyCodes = activeKeyCodes;
 			for(Entity e : entityLayer) {
-				e.update(deltaT);
+				e.update(deltaT, clonedKeyCodes);
 				if(e instanceof CollisionEntity) {
 					((CollisionEntity) e).updateCollision(getCollisionEntities(), deltaT);
 				}
@@ -120,11 +120,10 @@ public abstract class KYscreen extends JFrame {
 				deltaT = (double) (System.currentTimeMillis() - referenceTime) / 1000;
 				referenceTime = System.currentTimeMillis();
 				
-				
-				update(deltaT);
-				
 				updateEntities();
 
+				update(deltaT);
+				
 				
 				render(getGraphics());
 			}
@@ -163,11 +162,11 @@ public abstract class KYscreen extends JFrame {
 									CollisionBox xb = ((CollisionEntity) e).getXCollisionBox();
 									CollisionBox yb = ((CollisionEntity) e).getYCollisionBox();
 									offg.setColor(Color.black);
-									offg.drawRect(cb.x, cb.y, cb.width, cb.height);
+									offg.drawRect(cb.x - (int) Math.round(getCameraPos().getX()), cb.y - (int) Math.round(getCameraPos().getY()), cb.width, cb.height);
 									offg.setColor(Color.red);
-									offg.drawRect(xb.x, xb.y, xb.width, xb.height);
+									offg.drawRect(xb.x - (int) Math.round(getCameraPos().getX()), xb.y - (int) Math.round(getCameraPos().getY()), xb.width, xb.height);
 									offg.setColor(Color.blue);
-									offg.drawRect(yb.x, yb.y, yb.width, yb.height);
+									offg.drawRect(yb.x - (int) Math.round(getCameraPos().getX()), yb.y - (int) Math.round(getCameraPos().getY()), yb.width, yb.height);
 								}
 							}
 						}
@@ -241,10 +240,6 @@ public abstract class KYscreen extends JFrame {
 		}
 	}
 	
-	public KeyEvent getKeyEvent() {
-		return this.keyEvent;
-	}
-	
 	public boolean getKeyStatus(int key) {
 		return this.activeKeyCodes.contains(key);
 	}
@@ -255,14 +250,12 @@ public abstract class KYscreen extends JFrame {
 			if(!activeKeyCodes.contains(e.getKeyCode())) {
 				activeKeyCodes.add(e.getKeyCode());
 			}
-			keyEvent = e;
 		}
 		@Override
 		public void keyReleased(KeyEvent e) {
 			if(activeKeyCodes.contains(e.getKeyCode())) {
 				activeKeyCodes.remove(activeKeyCodes.indexOf(e.getKeyCode()));
 			}
-			keyEvent = e;
 		}
 		@Override
 		public void keyTyped(KeyEvent arg0) {

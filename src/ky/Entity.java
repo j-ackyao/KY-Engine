@@ -143,7 +143,7 @@ public class Entity {
 		this.rotation = rot;
 	}
 	
-	public void update(double deltaT) {
+	public void update(double deltaT, ArrayList<Integer> keyCodes) {
 		
 	}
 }

@@ -1,6 +1,11 @@
-package ky;
+package p;
 
 import java.awt.event.KeyEvent;
+
+import ky.Asset;
+import ky.CollisionEntity;
+import ky.KYscreen;
+import ky.Vector2D;
 
 public class Main extends KYscreen {
 	private static final long serialVersionUID = 1L;
@@ -12,22 +17,20 @@ public class Main extends KYscreen {
 	}
 
 	public static void main(String[] args) {
-		new Main(1000, 1000, false, 20);
+		new Main(1000, 1000, false, 120);
 	}
 
 	CollisionEntity nyaentity;
-	CollisionEntity test;
-	CollisionEntity blank;
+	CollisionEntity player;
+	CollisionEntity ground;
 	double speed;
 	Asset background;
 	Asset nya;
 	
-	boolean jumped = false;
-	
 	@Override
 	public void start() {
 		
-		speed = 1000;
+		speed = 500;
 		
 		String[] group = {"nya.png","ichi.png","ni.png","san.png", "nya.png", "arigatou.png"};
 		nya = new Asset(group, new Vector2D(0, 0), 1, 0, "nya");
@@ -35,19 +38,24 @@ public class Main extends KYscreen {
 		nya.setVisible(true);
 		
 		
-		nyaentity = new CollisionEntity(200, 0, 200, 200, 2, false, "nya");
+		nyaentity = new CollisionEntity(200, 0, 200, 200, 2, true, "nya");
 		nyaentity.addAsset(nya);
 		nyaentity.setVisible(true);
 		addEntity(nyaentity);
 		
-		test = new _TestCollisionEntity();
-		test.addAsset(test.getAsset("test"));
-		addEntity(test);
+		
+		ground = new Ground(500, 1000, 10000, 256, 2, true, "ground");
+		addEntity(ground);
+		
+		
+		player = new Player();
+		addEntity(player);
 		
 		
 		// collision debugging
-		test.setCollisionBoxVisibility(true);
+		player.setCollisionBoxVisibility(true);
 		nyaentity.setCollisionBoxVisibility(true);
+		ground.setCollisionBoxVisibility(true);
 		
 		// ===============
 		
@@ -64,49 +72,42 @@ public class Main extends KYscreen {
 	public void update(double deltaT) {
 		
 		nyaentity.setVel(0, 0);
-		test.setVel(0, 0);
-		
-		if(getKeyStatus(KeyEvent.VK_W)) {
-			nyaentity.addVel(0, -1 * speed);
-		}
-		if(getKeyStatus(KeyEvent.VK_S)) {
-			nyaentity.addVel(0, 1 * speed);
-		}
-		if(getKeyStatus(KeyEvent.VK_A)) {
-			nyaentity.addVel(-1 * speed, 0);
-		}
-		if(getKeyStatus(KeyEvent.VK_D)) {
-			nyaentity.addVel(1 * speed, 0);
-		}
-		if(getKeyStatus(KeyEvent.VK_F)) {
-			nyaentity.getAsset("nya").animate();
-		}
 		
 		if(getKeyStatus(KeyEvent.VK_UP)) {
-			test.addVel(0, -1 * speed);
+			nyaentity.addVel(0, -1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_DOWN)) {
-			test.addVel(0, 1 * speed);
+			nyaentity.addVel(0, 1 * speed);
 		}
 		if(getKeyStatus(KeyEvent.VK_LEFT)) {
-			test.addVel(-1 * speed, 0);
+			nyaentity.addVel(-1 * speed, 0);
 		}
 		if(getKeyStatus(KeyEvent.VK_RIGHT)) {
-			test.addVel(1 * speed, 0);
+			nyaentity.addVel(1 * speed, 0);
 		}
-		
+		if(getKeyStatus(KeyEvent.VK_NUMPAD0)) {
+			nyaentity.getAsset("nya").animate();
+		}
 		
 		if(getKeyStatus(KeyEvent.VK_Q) && rescaled == false) {
 			rescaled = true;
 			background.rescale(2);
-			test.getAsset("test").rescale(2);
+			player.getAsset("bread").rescale(2);
 			nyaentity.getAsset("nya").rescale(2);
 		}
 		if(!getKeyStatus(KeyEvent.VK_Q) && rescaled != false) {
 			rescaled = false;
 			background.rescale(0.5);
-			test.getAsset("test").rescale(0.5);
+			player.getAsset("bread").rescale(0.5);
 			nyaentity.getAsset("nya").rescale(0.5);
 		}
+		
+		
+		
+		
+		setCameraPos(player.getX() - (double) getWidth()/2, player.getY() - (double) getHeight()/2);
+		
+		
+		
 	}
 }
