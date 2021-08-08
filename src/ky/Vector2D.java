@@ -53,7 +53,22 @@ public class Vector2D {
 	}
 	
 	public double getAngle() {
-		return Math.abs(Math.atan(this.y/this.x) * 180 / Math.PI);
+		double angle = Math.abs(Math.atan(this.y/this.x)) * 180d / Math.PI;
+		
+		if(this.x > 0 && this.y <= 0) { // quad 1
+			return angle;
+		}
+		else if(this.x < 0 && this.y <= 0) { // quad 2
+			return 180d - angle;
+		}
+		else if(this.x <= 0 && this.y >= 0) { // quad 3
+			return 180d + angle;
+		}
+		else if(this.x > 0 && this.y > 0) { // quad 4
+			return 360d - angle;
+		}
+		
+		return angle;
 	}
 	
 	public void add(Vector2D addend) {
