@@ -86,7 +86,7 @@ public class CollisionEntity extends Entity {
 				CollisionBox collidingEntityYCollisionBox = collidingEntity.getYCollisionBox();
 				//updatedCECollisionBox.setPos(Vector2D.add(collidingEntity.getPos(), Vector2D.multiply(collidingEntity.getVel(), deltaT)));
 				
-				if(!this.staticCollision) {
+				if(!this.staticCollision && collidingEntity.getCollision()) {
 
 					if (collidingEntityXCollisionBox.intersects(this.xCollisionBox)) { // horizontal collision
 						if (getX() < collidingEntity.getX()) { // this entity is to the left of collidingEntity
@@ -94,7 +94,8 @@ public class CollisionEntity extends Entity {
 						} else {
 							setPos(collidingEntityXCollisionBox.getMaxX() + this.collisionBox.getWidth() / 2, getY());
 						}
-						setVel(collidingEntity.getVel().getX(), getVel().getY());
+						//setVel(collidingEntity.getVel().getX(), getVel().getY());
+						setVel(0, getVel().getY());
 						this.collidingEntities.add(collidingEntity);
 					}
 
@@ -104,7 +105,8 @@ public class CollisionEntity extends Entity {
 						} else {
 							setPos(getX(), collidingEntityYCollisionBox.getMaxY() + this.collisionBox.getHeight() / 2);
 						}
-						setVel(getVel().getX(), collidingEntity.getVel().getY());
+						//setVel(getVel().getX(), collidingEntity.getVel().getY());
+						setVel(getVel().getX(), 0);
 						this.collidingEntities.add(collidingEntity);
 					}
 				}
