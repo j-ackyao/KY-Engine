@@ -14,7 +14,7 @@ public class Asset {
 			image = ImageIO.read(new File(filename));
 		} catch (IOException missingTexture) {
 			missingTexture.printStackTrace();
-			getMissing();
+			image = getMissing();
 		}
 		return image;
 	}
@@ -26,7 +26,7 @@ public class Asset {
 				images[i] = ImageIO.read(new File(filenames[i]));
 			} catch (IOException missingTexture) {
 				missingTexture.printStackTrace();
-				getMissing();
+				images[i] = getMissing();
 			}
 		}
 		return images;
@@ -46,19 +46,14 @@ public class Asset {
 	
 	private Vector2D position;
 	private int width, height;
-	private BufferedImage image = null; // sprite of asset
-	private BufferedImage[] images = null; // sprites of asset if animated
+	protected BufferedImage[] images = null; // sprite(s) of asset
 	private String name = ""; // asset's name
 	private boolean visible = false; // if asset will be rendered
+	private int imageIndex = 0;
 	private int layer = 0;
-	private boolean animated = false; // if asset has animation or not
-	private boolean animating = false; // if asset is currently in animation
-	private int animationCycle = 0; // the index of sprites which the animation is currently on
-	private double animationTime = 0; // milliseconds between animation sprites, this should not be less than screen's mspf
-	private double animationReferenceTime = 0; // current time at which animation sprite is changed
 	
 	public Asset(BufferedImage image, Vector2D position, int layer) {
-		this.image = image;
+		this.images = new BufferedImage[] {image};
 		this.position = position;
 		this.width = image.getWidth();
 		this.height = image.getHeight();
@@ -66,7 +61,7 @@ public class Asset {
 	}
 	
 	public Asset(BufferedImage image, Vector2D position, int width, int height, int layer) {
-		this.image = image;
+		this.images = new BufferedImage[] {image};
 		this.position = position;
 		this.width = width;
 		this.height = height;
@@ -75,7 +70,7 @@ public class Asset {
 	
 	public Asset(BufferedImage image, Vector2D position, int layer, String name) {
 		this.name = name;
-		this.image = image;
+		this.images = new BufferedImage[] {image};
 		this.position = position;
 		this.width = image.getWidth();
 		this.height = image.getHeight();
@@ -84,18 +79,14 @@ public class Asset {
 	
 	public Asset(BufferedImage image, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
-		this.image = image;
+		this.images = new BufferedImage[] {image};
 		this.position = position;
 		this.width = width;
 		this.height = height;
 		this.layer = layer;
 	}
 	
-	public Asset(BufferedImage[] images, Vector2D position, double animationTime, int layer) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / images.length;
-		this.animationReferenceTime = System.currentTimeMillis();
-		this.image = images[0];
+	public Asset(BufferedImage[] images, Vector2D position, int layer) {
 		this.images = images;
 		this.position = position;
 		this.width = images[0].getWidth();
@@ -103,11 +94,7 @@ public class Asset {
 		this.layer = layer;
 	}
 	
-	public Asset(BufferedImage[] images, Vector2D position, int width, int height, double animationTime, int layer) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / images.length;
-		this.animationReferenceTime = System.currentTimeMillis();
-		this.image = images[0];
+	public Asset(BufferedImage[] images, Vector2D position, int width, int height, int layer) {
 		this.images = images;
 		this.position = position;
 		this.width = width;
@@ -115,12 +102,8 @@ public class Asset {
 		this.layer = layer;
 	}
 	
-	public Asset(BufferedImage[] images, Vector2D position, double animationTime, int layer, String name) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / images.length;
-		this.animationReferenceTime = System.currentTimeMillis();
+	public Asset(BufferedImage[] images, Vector2D position, int layer, String name) {
 		this.name = name;
-		this.image = images[0];
 		this.images = images;
 		this.position = position;
 		this.width = images[0].getWidth();
@@ -128,12 +111,8 @@ public class Asset {
 		this.layer = layer;
 	}
 	
-	public Asset(BufferedImage[] images, Vector2D position, int width, int height, double animationTime, int layer, String name) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / images.length;
-		this.animationReferenceTime = System.currentTimeMillis();
+	public Asset(BufferedImage[] images, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
-		this.image = images[0];
 		this.images = images;
 		this.position = position;
 		this.width = width;
@@ -142,15 +121,15 @@ public class Asset {
 	}
 	
 	public Asset(String filename, Vector2D position, int layer) {
-		this.image = readImage(filename);
+		this.images = new BufferedImage[] {readImage(filename)};
 		this.position = position;
-		this.width = this.image.getWidth();
-		this.height = this.image.getHeight();
+		this.width = this.images[0].getWidth();
+		this.height = this.images[0].getHeight();
 		this.layer = layer;
 	}
 	
 	public Asset(String filename, Vector2D position, int width, int height, int layer) {
-		this.image = readImage(filename);
+		this.images = new BufferedImage[] {readImage(filename)};
 		this.position = position;
 		this.width = width;
 		this.height = height;
@@ -159,66 +138,50 @@ public class Asset {
 	
 	public Asset(String filename, Vector2D position, int layer, String name) {
 		this.name = name;
-		this.image = readImage(filename);
+		this.images = new BufferedImage[] {readImage(filename)};
 		this.position = position;
-		this.width = this.image.getWidth();
-		this.height = this.image.getHeight();
+		this.width = this.images[0].getWidth();
+		this.height = this.images[0].getHeight();
 		this.layer = layer;
 	}
 	
 	public Asset(String filename, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
-		this.image = readImage(filename);
+		this.images = new BufferedImage[] {readImage(filename)};
 		this.position = position;
 		this.width = width;
 		this.height = height;
 		this.layer = layer;
 	}
 	
-	public Asset(String[] filenames, Vector2D position, double animationTime, int layer) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / filenames.length;
-		this.animationReferenceTime = System.currentTimeMillis();
+	public Asset(String[] filenames, Vector2D position, int layer) {
 		this.images = readImage(filenames);
-		this.image = this.images[0];
 		this.position = position;
 		this.width = this.images[0].getWidth();
 		this.height = this.images[0].getHeight();
 		this.layer = layer;
 	}
 	
-	public Asset(String[] filenames, Vector2D position, int width, int height, double animationTime, int layer) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / filenames.length;
-		this.animationReferenceTime = System.currentTimeMillis();
+	public Asset(String[] filenames, Vector2D position, int width, int height, int layer) {
 		this.images = readImage(filenames);
-		this.image = this.images[0];
 		this.position = position;
 		this.width = width;
 		this.height = height;
 		this.layer = layer;
 	}
 	
-	public Asset(String[] filenames, Vector2D position, double animationTime, int layer, String name) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / filenames.length;
-		this.animationReferenceTime = System.currentTimeMillis();
+	public Asset(String[] filenames, Vector2D position, int layer, String name) {
 		this.name = name;
 		this.images = readImage(filenames);
-		this.image = this.images[0];
 		this.position = position;
 		this.width = this.images[0].getWidth();
 		this.height = this.images[0].getHeight();
 		this.layer = layer;
 	}
 	
-	public Asset(String[] filenames, Vector2D position, int width, int height, double animationTime, int layer, String name) {
-		this.animated = true;
-		this.animationTime = animationTime * (double) 1000 / filenames.length;
-		this.animationReferenceTime = System.currentTimeMillis();
+	public Asset(String[] filenames, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
 		this.images = readImage(filenames);
-		this.image = this.images[0];
 		this.position = position;
 		this.width = width;
 		this.height = height;
@@ -236,24 +199,12 @@ public class Asset {
 		this.visible = visible;
 	}
 	
-	public void animate() {
-		this.animating = true;
-	}
-	
 	public boolean isVisible() {
 		return this.visible;
 	}
 	
 	public int getLayer() {
 		return this.layer;
-	}
-	
-	public boolean isAnimated() {
-		return this.animated;
-	}
-	
-	public boolean isAnimating() {
-		return this.animating;
 	}
 
 	// position related methods
@@ -297,35 +248,22 @@ public class Asset {
 	}
 	
 	public Asset clone() {
-		Asset clone;
-		if(this.isAnimated()) {
-			clone = new Asset(this.images, getPos(), getWidth(), getHeight(), this.animationTime, this.layer, this.name);
-		}
-		else {
-			clone = new Asset(this.image, getPos(), getWidth(), getHeight(), this.layer, this.name);
-		}
+		Asset clone = new Asset(this.images, getPos(), getWidth(), getHeight(), this.layer, this.name);
 		clone.setVisible(this.visible);
-		
+		clone.setImageIndex(this.imageIndex);
 		return clone; 
 	}
 	
+	public void setImageIndex(int index) {
+		imageIndex = index;
+	}
+	
+	public int getImageIndex() {
+		return this.imageIndex;
+	}
 	
 	public BufferedImage getImage() {
-		if (animated && animating) {
-			if(System.currentTimeMillis() - animationReferenceTime > animationTime) {
-				animationReferenceTime = System.currentTimeMillis();
-				animationCycle++;
-				if(animationCycle > images.length - 1) {
-					animationCycle = 0;
-					animating = false;
-				}
-				return getImage(animationCycle);
-			}
-			return getImage(animationCycle);
-		}
-		else {
-			return this.image;
-		}
+		return getImage(this.imageIndex);
 	}
 	
 	public BufferedImage getImage(int index) {

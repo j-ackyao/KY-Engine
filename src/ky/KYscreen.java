@@ -142,7 +142,8 @@ public abstract class KYscreen extends JFrame {
 		boolean renderEntities = true;
 		int i = 0;										// this acts as the index for the layers, goes through all the layers to render
 		
-		while(renderAssets || renderEntities) {			// acts like a "for loop," stops when either entities or assets have been rendered 
+		while(renderAssets || renderEntities) {			// acts like a "for loop," stops when either entities or assets have been rendered
+			
 			if(i < allEntities.length) {
 				if(allEntities[i].length != 0) {		// if entity layer is not empty
 					for(Entity e : allEntities[i]) {
