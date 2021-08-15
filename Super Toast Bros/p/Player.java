@@ -55,7 +55,7 @@ public class Player extends CollisionEntity {
 	
 	@Override
 	public void update(double deltaT, ArrayList<Integer> keyCodes) {
-
+		
 		addVel(0, gravity * deltaT);
 		
 		if(keyCodes.contains(KeyEvent.VK_W) && !jumped) {
@@ -64,12 +64,19 @@ public class Player extends CollisionEntity {
 		}
 		
 		if(keyCodes.contains(KeyEvent.VK_A)) {
+
+			this.getAsset("bread").rotate(-1);
 			bread.setImageIndex(0);
 			addVel(-1 * accel * deltaT, 0);
 		}
 		else if(keyCodes.contains(KeyEvent.VK_D)) {
+
+			this.getAsset("bread").rotate(1);
 			bread.setImageIndex(1);
 			addVel(1 * accel * deltaT, 0);
+		}
+		else if(keyCodes.contains(KeyEvent.VK_S)) {
+			
 		}
 		else { //Math cos does not work properly, so resorting to more ifs
 			setVel(getVel().getX() * deccel * deltaT, getVel().getY());
