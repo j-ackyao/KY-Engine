@@ -64,6 +64,7 @@ public class Entity {
 		}
 	}
 	
+	/* doesn't seem necessary, user should have assets in track anyways
 	public Asset getAsset(String name) {
 		for(ArrayList<Asset> assetLayer : entityAssetLayers) {
 			for(Asset asset : assetLayer) {
@@ -74,8 +75,9 @@ public class Entity {
 		}
 		return null;
 	}
+	*/
 	
-	public Asset[][] getAssets() {
+	public Asset[][] getAssetLayers() {
 		Asset[][] converted = new Asset[entityAssetLayers.size()][];
 		for(int i = 0; i < entityAssetLayers.size(); i++) {
 			converted[i] = entityAssetLayers.get(i).toArray(new Asset[entityAssetLayers.get(i).size()]);
