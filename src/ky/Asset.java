@@ -1,5 +1,7 @@
 package ky;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +48,10 @@ public class Asset {
 	
 	private Vector2D position;
 	private int width, height;
+	private int originalWidth, originalHeight;
+	private double rotation = 0; // in degrees
 	protected BufferedImage[] images = null; // sprite(s) of asset
+	private BufferedImage[] originalImages = null;
 	private String name = ""; // asset's name
 	private boolean visible = false; // if asset will be rendered
 	private int imageIndex = 0;
@@ -54,137 +59,185 @@ public class Asset {
 	
 	public Asset(BufferedImage image, Vector2D position, int layer) {
 		this.images = new BufferedImage[] {image};
+		this.originalImages = new BufferedImage[] {image};
 		this.position = position;
 		this.width = image.getWidth();
 		this.height = image.getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(BufferedImage image, Vector2D position, int width, int height, int layer) {
 		this.images = new BufferedImage[] {image};
+		this.originalImages = new BufferedImage[] {image};
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(BufferedImage image, Vector2D position, int layer, String name) {
 		this.name = name;
 		this.images = new BufferedImage[] {image};
+		this.originalImages = new BufferedImage[] {image};
 		this.position = position;
 		this.width = image.getWidth();
 		this.height = image.getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(BufferedImage image, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
 		this.images = new BufferedImage[] {image};
+		this.originalImages = new BufferedImage[] {image};
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(BufferedImage[] images, Vector2D position, int layer) {
 		this.images = images;
+		this.originalImages = images;
 		this.position = position;
 		this.width = images[0].getWidth();
 		this.height = images[0].getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(BufferedImage[] images, Vector2D position, int width, int height, int layer) {
 		this.images = images;
+		this.originalImages = images;
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(BufferedImage[] images, Vector2D position, int layer, String name) {
 		this.name = name;
 		this.images = images;
+		this.originalImages = images;
 		this.position = position;
 		this.width = images[0].getWidth();
 		this.height = images[0].getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(BufferedImage[] images, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
 		this.images = images;
+		this.originalImages = images;
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String filename, Vector2D position, int layer) {
 		this.images = new BufferedImage[] {readImage(filename)};
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = this.images[0].getWidth();
 		this.height = this.images[0].getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String filename, Vector2D position, int width, int height, int layer) {
 		this.images = new BufferedImage[] {readImage(filename)};
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String filename, Vector2D position, int layer, String name) {
 		this.name = name;
 		this.images = new BufferedImage[] {readImage(filename)};
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = this.images[0].getWidth();
 		this.height = this.images[0].getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String filename, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
 		this.images = new BufferedImage[] {readImage(filename)};
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String[] filenames, Vector2D position, int layer) {
 		this.images = readImage(filenames);
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = this.images[0].getWidth();
 		this.height = this.images[0].getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String[] filenames, Vector2D position, int width, int height, int layer) {
 		this.images = readImage(filenames);
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String[] filenames, Vector2D position, int layer, String name) {
 		this.name = name;
 		this.images = readImage(filenames);
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = this.images[0].getWidth();
 		this.height = this.images[0].getHeight();
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 	
 	public Asset(String[] filenames, Vector2D position, int width, int height, int layer, String name) {
 		this.name = name;
 		this.images = readImage(filenames);
+		this.originalImages = this.images.clone();
 		this.position = position;
 		this.width = width;
 		this.height = height;
+		this.originalWidth = this.width;
+		this.originalHeight = this.height;
 		this.layer = layer;
 	}
 
@@ -207,7 +260,7 @@ public class Asset {
 		return this.layer;
 	}
 
-	// position related methods
+	// transformation related methods
 	
 	public void setPos(double x, double y) {
 		this.position.set(x, y);
@@ -229,6 +282,32 @@ public class Asset {
 		return this.position.clone().getY();
 	}
 	
+	public void rotate(double degrees) {
+		double rad = (this.rotation + degrees) * 180d / Math.PI;
+		this.rotation += degrees;
+		double cos = Math.abs(Math.cos(rad));
+		double sin = Math.abs(Math.sin(rad));
+		int rotatedWidth = (int) Math.round(getOriginalWidth() * cos + getOriginalHeight() * sin);
+		int rotatedHeight = (int) Math.round(getOriginalHeight() * cos + getOriginalWidth() * sin);
+		
+		for(int i = 0; i < images.length; i++) {
+			BufferedImage rotatedImage = new BufferedImage(rotatedWidth, rotatedHeight, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = rotatedImage.createGraphics();
+			AffineTransform at = new AffineTransform();
+			
+			at.translate((double) (rotatedWidth - getOriginalWidth()) / 2, (double) (rotatedHeight - getOriginalHeight()) / 2);
+			at.rotate(rad, (double) getOriginalWidth()/2, (double) getOriginalHeight()/2);
+			g.setTransform(at);
+			g.drawImage(getOriginalImage(i), 0, 0, null);
+		    g.dispose();
+			
+			images[i] = rotatedImage;
+		}
+		
+		this.width = rotatedWidth;
+		this.height = rotatedHeight;
+	}
+	
 	public int[] getDimensions() {
 		return new int[] {this.width, this.height};
 	}
@@ -239,6 +318,14 @@ public class Asset {
 	
 	public int getHeight() {
 		return this.height;
+	}
+	
+	public int getOriginalWidth() {
+		return this.originalWidth;
+	}
+	
+	public int getOriginalHeight() {
+		return this.originalHeight;
 	}
 	
 	// other methods
@@ -277,5 +364,22 @@ public class Asset {
 
 	public BufferedImage[] getImages() {
 		return this.images;
+	}
+	
+	public BufferedImage getOriginalImage() {
+		return getOriginalImage(this.imageIndex);
+	}
+	
+	public BufferedImage getOriginalImage(int index) {
+		try {
+			return this.originalImages[index];
+		} catch (ArrayIndexOutOfBoundsException noImageAtIndex) {
+			noImageAtIndex.printStackTrace();
+			return getMissing();
+		}
+	}
+
+	public BufferedImage[] getOriginalImages() {
+		return this.originalImages;
 	}
 }
