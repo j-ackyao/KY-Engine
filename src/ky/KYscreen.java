@@ -148,12 +148,16 @@ public abstract class KYscreen extends JFrame {
 				if(allEntities[i].length != 0) {		// if entity layer is not empty
 					for(Entity e : allEntities[i]) {
 						if(e.isVisible()) {
-							for(Asset[] assetLayer : e.getAssets()) {
+							for(Asset[] assetLayer : e.getAssetLayers()) {
 								for(Asset a : assetLayer) {
 									if(a.isVisible()) {
 										int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 + e.getX() - cameraPos.getX());
 										int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 + e.getY() - cameraPos.getY());
 										offg.drawImage(a.getImage(), renderXPos, renderYPos, a.getWidth(), a.getHeight(), null);
+										if(a.getDebugVisibility()) {
+											offg.setColor(Color.red);
+											offg.drawRect(renderXPos, renderYPos, a.getWidth(), a.getHeight());
+										}
 									}
 								}
 							}
@@ -164,7 +168,7 @@ public abstract class KYscreen extends JFrame {
 									CollisionBox yb = ((CollisionEntity) e).getYCollisionBox();
 									offg.setColor(Color.black);
 									offg.drawRect(cb.x - (int) Math.round(getCameraPos().getX()), cb.y - (int) Math.round(getCameraPos().getY()), cb.width, cb.height);
-									offg.setColor(Color.red);
+									offg.setColor(Color.green);
 									offg.drawRect(xb.x - (int) Math.round(getCameraPos().getX()), xb.y - (int) Math.round(getCameraPos().getY()), xb.width, xb.height);
 									offg.setColor(Color.blue);
 									offg.drawRect(yb.x - (int) Math.round(getCameraPos().getX()), yb.y - (int) Math.round(getCameraPos().getY()), yb.width, yb.height);
@@ -181,10 +185,19 @@ public abstract class KYscreen extends JFrame {
 			if(i < allAssets.length) {
 				if(allAssets[i].length != 0) {			// if asset layer is not empty
 					for(Asset a : allAssets[i]) {
+						
 						if(a.isVisible()) {
-							double renderXPos = a.getX() - (double) a.getWidth()/2 - cameraPos.getX();
-							double renderYPos = a.getY() - (double) a.getHeight()/2 - cameraPos.getY();
-							offg.drawImage(a.getImage(), (int) Math.round(renderXPos), (int) Math.round(renderYPos), a.getWidth(), a.getHeight(), null);
+							if(a instanceof Text) {
+								((Text) a).updateText();
+							}
+
+							int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 - cameraPos.getX());
+							int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 - cameraPos.getY());
+							offg.drawImage(a.getImage(), renderXPos, renderYPos, a.getWidth(), a.getHeight(), null);
+							if(a.getDebugVisibility()) {
+								offg.setColor(Color.red);
+								offg.drawRect(renderXPos, renderYPos, a.getWidth(), a.getHeight());
+							}
 						}
 					}
 				}

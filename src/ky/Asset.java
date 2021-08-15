@@ -56,6 +56,8 @@ public class Asset {
 	private boolean visible = false; // if asset will be rendered
 	private int imageIndex = 0;
 	private int layer = 0;
+	private boolean debugVisual; // to render outline of width and height
+	
 	
 	public Asset(BufferedImage image, Vector2D position, int layer) {
 		this.images = new BufferedImage[] {image};
@@ -243,11 +245,6 @@ public class Asset {
 
 	// visual related methods
 	
-	public void rescale(double factor) {
-		this.width *= factor;
-		this.height *= factor;
-	}
-	
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
@@ -256,9 +253,6 @@ public class Asset {
 		return this.visible;
 	}
 	
-	public int getLayer() {
-		return this.layer;
-	}
 
 	// transformation related methods
 	
@@ -274,6 +268,7 @@ public class Asset {
 		return this.position.clone();
 	}
 	
+	
 	public double getX() {
 		return this.position.clone().getX();
 	}
@@ -281,6 +276,13 @@ public class Asset {
 	public double getY() {
 		return this.position.clone().getY();
 	}
+
+	
+	public void rescale(double factor) {
+		this.width *= factor;
+		this.height *= factor;
+	}
+	
 	
 	public void rotate(double degrees) {
 		double rad = (this.rotation + degrees) * 180d / Math.PI;
@@ -308,6 +310,12 @@ public class Asset {
 		this.height = rotatedHeight;
 	}
 	
+	
+	public void horizontalFlip() {
+		
+	}
+	
+	
 	public int[] getDimensions() {
 		return new int[] {this.width, this.height};
 	}
@@ -320,6 +328,7 @@ public class Asset {
 		return this.height;
 	}
 	
+	
 	public int getOriginalWidth() {
 		return this.originalWidth;
 	}
@@ -328,11 +337,18 @@ public class Asset {
 		return this.originalHeight;
 	}
 	
+	
 	// other methods
 	
 	public String getName() {
 		return this.name;
 	}
+	
+	
+	public int getLayer() {
+		return this.layer;
+	}
+	
 	
 	public Asset clone() {
 		Asset clone = new Asset(this.images, getPos(), getWidth(), getHeight(), this.layer, this.name);
@@ -341,6 +357,7 @@ public class Asset {
 		return clone; 
 	}
 	
+	
 	public void setImageIndex(int index) {
 		imageIndex = index;
 	}
@@ -348,6 +365,7 @@ public class Asset {
 	public int getImageIndex() {
 		return this.imageIndex;
 	}
+	
 	
 	public BufferedImage getImage() {
 		return getImage(this.imageIndex);
@@ -366,6 +384,7 @@ public class Asset {
 		return this.images;
 	}
 	
+	
 	public BufferedImage getOriginalImage() {
 		return getOriginalImage(this.imageIndex);
 	}
@@ -381,5 +400,13 @@ public class Asset {
 
 	public BufferedImage[] getOriginalImages() {
 		return this.originalImages;
+	}
+	
+	public void setDebugVisibility(boolean visible) {
+		this.debugVisual = visible;
+	}
+	
+	public boolean getDebugVisibility() {
+		return this.debugVisual;
 	}
 }

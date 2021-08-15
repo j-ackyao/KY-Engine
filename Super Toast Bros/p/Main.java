@@ -160,7 +160,7 @@ public class Main extends KYscreen {
 			Entity[][] a = getEntityLayers();
 			for(Entity[] b : a) {
 				for(Entity c : b) {
-					for(Asset[] d : c.getAssets()) {
+					for(Asset[] d : c.getAssetLayers()) {
 						for(Asset e : d) {
 							e.rescale(2);
 						}
@@ -173,7 +173,7 @@ public class Main extends KYscreen {
 			Entity[][] a = getEntityLayers();
 			for(Entity[] b : a) {
 				for(Entity c : b) {
-					for(Asset[] d : c.getAssets()) {
+					for(Asset[] d : c.getAssetLayers()) {
 						for(Asset e : d) {
 							e.rescale(0.5);
 						}
@@ -186,6 +186,16 @@ public class Main extends KYscreen {
 			box = true;
 			for(CollisionEntity ce : getCollisionEntities()) {
 				ce.setCollisionBoxVisibility(!ce.getCollisionBoxVisibility());
+				for(Asset[] a : ce.getAssetLayers()) {
+					for(Asset b : a) {
+						b.setDebugVisibility(!b.getDebugVisibility());
+					}
+				}
+			}
+			for(Asset[] a : getAssetLayers()) {
+				for(Asset b : a) {
+					b.setDebugVisibility(!b.getDebugVisibility());
+				}
 			}
 		}
 		if(!getKeyStatus(KeyEvent.VK_F) && box != false) {
