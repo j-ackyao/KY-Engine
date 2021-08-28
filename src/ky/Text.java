@@ -73,6 +73,16 @@ public class Text extends Asset {
 		this.updateColor = color;
 	}
 	
+
+	public Text clone() {
+		Text clone = new Text(getText(), getFont(), getColor(), getPos(), getWidth(), getHeight(), getLayer(), getName());
+		clone.setVisible(isVisible());
+		clone.setImageIndex(getImageIndex());
+		return clone; 
+	}
+	
+	
+	
 	public void updateText() {
 		if(!this.text.equals(this.updateText) || !this.font.equals(this.updateFont) || !this.color.equals(this.updateColor)) {
 			this.text = this.updateText;

@@ -43,13 +43,21 @@ public abstract class KYscreen extends JFrame {
 		return collisionEntities.toArray(new CollisionEntity[collisionEntities.size()]);
 	}
 	
+	public void setDebugMode(boolean debug) { // debug mode makes assets and collision entities' borders visible
+		this.debug = debug;
+	}
+	public boolean getDebugMode() {
+		return this.debug;
+	}
+	
+	private boolean debug = false;
 	
 	private Image offscreen;
 	private Graphics offg;
 	
 	private double mspf = 0; // milliseconds per frame
 	private double referenceTime = 0;
-	private double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
+	protected double deltaT = 0; // this should be elsewhere, but will be here temporarily (probably)
 	
 	private Vector2D cameraPos = new Vector2D(0, 0);
 	
@@ -99,7 +107,7 @@ public abstract class KYscreen extends JFrame {
 	
 	public abstract void start();
 	
-	public abstract void update(double deltaT);
+	public abstract void update();
 	
 	public void updateEntities() {
 		for(Entity[] entityLayer : getEntityLayers()) {
@@ -122,7 +130,7 @@ public abstract class KYscreen extends JFrame {
 				
 				updateEntities();
 
-				update(deltaT);
+				update();
 				
 				
 				render(getGraphics());
@@ -151,10 +159,10 @@ public abstract class KYscreen extends JFrame {
 							for(Asset[] assetLayer : e.getAssetLayers()) {
 								for(Asset a : assetLayer) {
 									if(a.isVisible()) {
-										int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 + e.getX() - cameraPos.getX());
-										int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 + e.getY() - cameraPos.getY());
+										int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 + e.getX() - getCameraPos().getX());
+										int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 + e.getY() - getCameraPos().getY());
 										offg.drawImage(a.getImage(), renderXPos, renderYPos, a.getWidth(), a.getHeight(), null);
-										if(a.getDebugVisibility()) {
+										if(a.getDebugVisibility() || this.debug) {
 											offg.setColor(Color.red);
 											offg.drawRect(renderXPos, renderYPos, a.getWidth(), a.getHeight());
 										}
@@ -162,7 +170,7 @@ public abstract class KYscreen extends JFrame {
 								}
 							}
 							if(e instanceof CollisionEntity) {
-								if(((CollisionEntity) e).getCollisionBoxVisibility()) {
+								if(((CollisionEntity) e).getCollisionBoxVisibility() || this.debug) {
 									CollisionBox cb = ((CollisionEntity) e).getCollisionBox();
 									CollisionBox xb = ((CollisionEntity) e).getXCollisionBox();
 									CollisionBox yb = ((CollisionEntity) e).getYCollisionBox();
@@ -191,10 +199,10 @@ public abstract class KYscreen extends JFrame {
 								((Text) a).updateText();
 							}
 
-							int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 - cameraPos.getX());
-							int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 - cameraPos.getY());
+							int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 - getCameraPos().getX());
+							int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 - getCameraPos().getY());
 							offg.drawImage(a.getImage(), renderXPos, renderYPos, a.getWidth(), a.getHeight(), null);
-							if(a.getDebugVisibility()) {
+							if(a.getDebugVisibility() || this.debug) {
 								offg.setColor(Color.red);
 								offg.drawRect(renderXPos, renderYPos, a.getWidth(), a.getHeight());
 							}
@@ -223,7 +231,7 @@ public abstract class KYscreen extends JFrame {
 		return this.cameraPos;
 	}
 	
-	public void addAsset(Asset asset) {
+	public void add(Asset asset) {
 		int difference = asset.getLayer() + 1 - assetLayers.size();// check if the indicated layer exists or not
 		if(difference > 0) { 							// if difference is greater than 0,
 			for(int i = 0; i < difference; i++) {		// there needs to be filler layers to reach the indicated layer
@@ -235,7 +243,7 @@ public abstract class KYscreen extends JFrame {
 		}
 	}
 	
-	public void addEntity(Entity entity) {
+	public void add(Entity entity) {
 		
 		int difference = entity.getLayer() + 1 - entityLayers.size();// check if the indicated layer exists or not
 		if(difference > 0) { 							// if difference is greater than 0,
@@ -264,19 +272,26 @@ public abstract class KYscreen extends JFrame {
 			if(!activeKeyCodes.contains(e.getKeyCode())) {
 				activeKeyCodes.add(e.getKeyCode());
 			}
+			KYscreen.this.keyPressed(e.getKeyCode());
 		}
 		@Override
 		public void keyReleased(KeyEvent e) {
 			if(activeKeyCodes.contains(e.getKeyCode())) {
 				activeKeyCodes.remove(activeKeyCodes.indexOf(e.getKeyCode()));
 			}
+			KYscreen.this.keyReleased(e.getKeyCode());
 		}
 		@Override
-		public void keyTyped(KeyEvent arg0) {
-			// TODO Auto-generated method stub
-			
+		public void keyTyped(KeyEvent e) {
+			KYscreen.this.keyTyped(e.getKeyCode());
 		}
 	};
+	
+	public abstract void keyPressed(int keyCode);
+	
+	public abstract void keyReleased(int keyCode);
+	
+	public abstract void keyTyped(int keyCode);
 	
 	MouseListener mouseListener = new MouseListener() {
 		@Override
