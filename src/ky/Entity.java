@@ -11,7 +11,7 @@ public class Entity {
 	
 	private Vector2D position, velocity = new Vector2D(0, 0);
 	private double rotation = 0;
-	private String name;
+	private String name = "";
 	private boolean visible = false;
 	private int layer;
 	private ArrayList<ArrayList<Asset>> entityAssetLayers = new ArrayList<ArrayList<Asset>>(); // assets of entity (no render order)
@@ -52,7 +52,7 @@ public class Entity {
 		return this.layer;
 	}
 	
-	public void addAsset(Asset asset) {
+	public void add(Asset asset) {
 		int difference = asset.getLayer() + 1 - entityAssetLayers.size();// check if the indicated layer exists or not
 		if(difference > 0) { 							// if difference is greater than 0,
 			for(int i = 0; i < difference; i++) {		// there needs to be filler layers to reach the indicated layer
@@ -101,10 +101,6 @@ public class Entity {
 		return this.velocity.clone();
 	}
 	
-	public double getRotation() {
-		return this.rotation;
-	}
-	
 	public String getName() {
 		return this.name;
 	}
@@ -141,8 +137,16 @@ public class Entity {
 		this.velocity.add(deltaV);
 	}
 	
-	public void setRotation(double rot) {
-		this.rotation = rot;
+	public Entity clone() {
+		Entity clone = new Entity(getPos().clone(), getLayer(), getName());
+		for(Asset[] layers : getAssetLayers()) {
+			for(Asset a : layers) {
+				clone.add(a.clone());
+			}
+		}
+		clone.setVel(getVel());
+		clone.setVisible(isVisible());
+		return clone;
 	}
 	
 	public void update(double deltaT, ArrayList<Integer> keyCodes) {
