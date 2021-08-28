@@ -283,6 +283,10 @@ public class Asset {
 		this.height *= factor;
 	}
 	
+	public void setRotation(double degrees) {
+		this.rotation = 0;
+		rotate(degrees);
+	}
 	
 	public void rotate(double degrees) {
 		double rad = (this.rotation + degrees) * 180d / Math.PI;
@@ -292,13 +296,13 @@ public class Asset {
 		int rotatedWidth = (int) Math.round(getOriginalWidth() * cos + getOriginalHeight() * sin);
 		int rotatedHeight = (int) Math.round(getOriginalHeight() * cos + getOriginalWidth() * sin);
 		
+		AffineTransform at = new AffineTransform();
+		at.translate((double) (rotatedWidth - getOriginalWidth()) / 2, (double) (rotatedHeight - getOriginalHeight()) / 2);
+		at.rotate(rad, (double) getOriginalWidth()/2, (double) getOriginalHeight()/2);
+		
 		for(int i = 0; i < images.length; i++) {
 			BufferedImage rotatedImage = new BufferedImage(rotatedWidth, rotatedHeight, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = rotatedImage.createGraphics();
-			AffineTransform at = new AffineTransform();
-			
-			at.translate((double) (rotatedWidth - getOriginalWidth()) / 2, (double) (rotatedHeight - getOriginalHeight()) / 2);
-			at.rotate(rad, (double) getOriginalWidth()/2, (double) getOriginalHeight()/2);
 			g.setTransform(at);
 			g.drawImage(getOriginalImage(i), 0, 0, null);
 		    g.dispose();
@@ -309,12 +313,6 @@ public class Asset {
 		this.width = rotatedWidth;
 		this.height = rotatedHeight;
 	}
-	
-	
-	public void horizontalFlip() {
-		
-	}
-	
 	
 	public int[] getDimensions() {
 		return new int[] {this.width, this.height};
@@ -351,9 +349,9 @@ public class Asset {
 	
 	
 	public Asset clone() {
-		Asset clone = new Asset(this.images, getPos(), getWidth(), getHeight(), this.layer, this.name);
-		clone.setVisible(this.visible);
-		clone.setImageIndex(this.imageIndex);
+		Asset clone = new Asset(getImages().clone(), getPos().clone(), getWidth(), getHeight(), getLayer(), getName());
+		clone.setVisible(isVisible());
+		clone.setImageIndex(getImageIndex());
 		return clone; 
 	}
 	
