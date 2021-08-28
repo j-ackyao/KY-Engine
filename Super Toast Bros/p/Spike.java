@@ -6,10 +6,10 @@ import ky.Vector2D;
 
 public class Spike extends CollisionEntity {
 
-	public Spike(double x, double y, int collisionBoxWidth, int collisionBoxHeight, int layer, boolean staticCollision) {
-		super(x, y, collisionBoxWidth, collisionBoxHeight, layer, staticCollision, "spike");
+	public Spike(double x, double y, int collisionBoxWidth, int collisionBoxHeight, int layer) {
+		super(x, y, collisionBoxWidth, collisionBoxHeight, layer, "spike");
 		
-		Asset spike = new Asset("spike.png", new Vector2D(0, 0), 0, "spike");
+		Asset spike = new Asset("SuperToastBrosAssets/spike.png", new Vector2D(0, 0), 0, "spike");
 		spike.setVisible(true);
 		
 		
@@ -18,11 +18,11 @@ public class Spike extends CollisionEntity {
 			for(int u = 0; u < Math.ceil((double)collisionBoxHeight/128); u++) {
 				Asset clone = spike.clone();
 				clone.setPos(i * 256 - collisionBoxWidth/2 + 128, -u * 256 + collisionBoxHeight/2 - 128);
-				addAsset(clone);
+				add(clone);
 			}
 		}
-		
-		setCollision(false);
+
+		setStaticCollision(true);
 		setVisible(true);
 		
 	}
