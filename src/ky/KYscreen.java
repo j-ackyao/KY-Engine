@@ -1,9 +1,12 @@
 package ky;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -51,6 +54,8 @@ public abstract class KYscreen extends JFrame {
 	}
 	
 	private boolean debug = false;
+	private boolean isFullScreen = false;
+	private boolean cursorVisible = true;
 	
 	private Image offscreen;
 	private Graphics offg;
@@ -266,6 +271,41 @@ public abstract class KYscreen extends JFrame {
 		return this.activeKeyCodes.contains(key);
 	}
 
+	public void setFullScreen (boolean fullscreen) {
+		if (fullscreen) {
+			isFullScreen = true;
+			dispose();
+			setUndecorated(true);
+			setResizable(false);
+			setVisible(true);
+		} else {
+			isFullScreen = false;
+			dispose();
+			setExtendedState(JFrame.NORMAL);
+			setUndecorated(false);
+			setVisible(true);
+		}
+	}
+
+	public boolean getFullScreen () {
+		return isFullScreen;
+	}
+
+	public void setCursorVisible (boolean visible) {
+		if (!visible) {
+			cursorVisible=false;
+			setCursor(getToolkit().createCustomCursor(
+				new BufferedImage(3,3, BufferedImage.TYPE_INT_ARGB), new Point(0,0), "null"));
+		} else {
+			cursorVisible=true;
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}
+	}
+
+	public boolean getCursorVisible () {
+		return cursorVisible;
+	}
+
 	KeyListener keyListener = new KeyListener() {
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -296,27 +336,22 @@ public abstract class KYscreen extends JFrame {
 	MouseListener mouseListener = new MouseListener() {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mouseExited(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 	};
