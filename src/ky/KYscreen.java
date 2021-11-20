@@ -19,12 +19,12 @@ public abstract class KYscreen extends JFrame {
 	private static final long serialVersionUID = 1897229948652321731L;
 
 
-	private ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
+	protected ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
 																								// assets within layers do not have render priorities
 	   																							// between them
-	private ArrayList<ArrayList<Entity>> entityLayers = new ArrayList<ArrayList<Entity>>(); // holds all the entities to be rendered
+	protected ArrayList<ArrayList<Entity>> entityLayers = new ArrayList<ArrayList<Entity>>(); // holds all the entities to be rendered
 	
-	private ArrayList<CollisionEntity> collisionEntities = new ArrayList<CollisionEntity>(); // holds all collision entities to handle collisions easier
+	protected ArrayList<CollisionEntity> collisionEntities = new ArrayList<CollisionEntity>(); // holds all collision entities to handle collisions easier
 	
 	public Entity[][] getEntityLayers(){
 		Entity[][] converted = new Entity[entityLayers.size()][];
@@ -66,7 +66,7 @@ public abstract class KYscreen extends JFrame {
 	
 	private Vector2D cameraPos = new Vector2D(0, 0);
 	
-	private ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
+	protected ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
 	
 	public KYscreen(int width, int height, boolean resizable) {
 		this.getContentPane().setPreferredSize(new Dimension(width, height));
