@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -274,6 +276,9 @@ public abstract class KYscreen extends JFrame {
 	public void setFullScreen (boolean fullscreen) {
 		if (fullscreen) {
 			isFullScreen = true;
+			GraphicsEnvironment gE = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice gD = gE.getDefaultScreenDevice();
+			setSize(gD.getDisplayMode().getWidth(), gD.getDisplayMode().getHeight());
 			dispose();
 			setUndecorated(true);
 			setResizable(false);
