@@ -1,9 +1,14 @@
 package ky;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -16,12 +21,12 @@ public abstract class KYscreen extends JFrame {
 	private static final long serialVersionUID = 1897229948652321731L;
 
 
-	private ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
+	protected ArrayList<ArrayList<Asset>> assetLayers = new ArrayList<ArrayList<Asset>>(); // this is a collection of arraylists, which are layers
 																								// assets within layers do not have render priorities
 	   																							// between them
-	private ArrayList<ArrayList<Entity>> entityLayers = new ArrayList<ArrayList<Entity>>(); // holds all the entities to be rendered
+	protected ArrayList<ArrayList<Entity>> entityLayers = new ArrayList<ArrayList<Entity>>(); // holds all the entities to be rendered
 	
-	private ArrayList<CollisionEntity> collisionEntities = new ArrayList<CollisionEntity>(); // holds all collision entities to handle collisions easier
+	protected ArrayList<CollisionEntity> collisionEntities = new ArrayList<CollisionEntity>(); // holds all collision entities to handle collisions easier
 	
 	public Entity[][] getEntityLayers(){
 		Entity[][] converted = new Entity[entityLayers.size()][];
@@ -51,6 +56,8 @@ public abstract class KYscreen extends JFrame {
 	}
 	
 	private boolean debug = false;
+	private boolean isFullScreen = false;
+	private boolean cursorVisible = true;
 	
 	private Image offscreen;
 	private Graphics offg;
@@ -61,7 +68,7 @@ public abstract class KYscreen extends JFrame {
 	
 	private Vector2D cameraPos = new Vector2D(0, 0);
 	
-	private ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
+	protected ArrayList<Integer> activeKeyCodes = new ArrayList<Integer>();
 	
 	public KYscreen(int width, int height, boolean resizable) {
 		this.getContentPane().setPreferredSize(new Dimension(width, height));
@@ -266,6 +273,44 @@ public abstract class KYscreen extends JFrame {
 		return this.activeKeyCodes.contains(key);
 	}
 
+	public void setFullScreen (boolean fullscreen) {
+		if (fullscreen) {
+			isFullScreen = true;
+			GraphicsEnvironment gE = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice gD = gE.getDefaultScreenDevice();
+			setSize(gD.getDisplayMode().getWidth(), gD.getDisplayMode().getHeight());
+			dispose();
+			setUndecorated(true);
+			setResizable(false);
+			setVisible(true);
+		} else {
+			isFullScreen = false;
+			dispose();
+			setExtendedState(JFrame.NORMAL);
+			setUndecorated(false);
+			setVisible(true);
+		}
+	}
+
+	public boolean getFullScreen () {
+		return isFullScreen;
+	}
+
+	public void setCursorVisible (boolean visible) {
+		if (!visible) {
+			cursorVisible=false;
+			setCursor(getToolkit().createCustomCursor(
+				new BufferedImage(3,3, BufferedImage.TYPE_INT_ARGB), new Point(0,0), "null"));
+		} else {
+			cursorVisible=true;
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}
+	}
+
+	public boolean getCursorVisible () {
+		return cursorVisible;
+	}
+
 	KeyListener keyListener = new KeyListener() {
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -296,27 +341,22 @@ public abstract class KYscreen extends JFrame {
 	MouseListener mouseListener = new MouseListener() {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mouseExited(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 	};
