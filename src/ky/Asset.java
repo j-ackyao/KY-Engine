@@ -288,14 +288,42 @@ public class Asset {
 		rotate(degrees);
 	}
 	
+	public void flipHorizontal() {
+		for(int i = 0; i < images.length; i++) {
+			BufferedImage flippedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = flippedImage.createGraphics();
+			// draw image with negative width, and translate it by its width
+			// use original image to draw new image
+			g.drawImage(images[i], getWidth(), 0, -getWidth(), getHeight(), null);
+		    g.dispose();
+			
+			images[i] = flippedImage;
+		}
+	}
+	
+	public void flipVertical(){
+		for(int i = 0; i < images.length; i++) {
+			BufferedImage flippedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = flippedImage.createGraphics();
+			// draw image with negative height, and translate it by its height
+			// use original image to draw new image
+			g.drawImage(images[i], 0, getHeight(), getWidth(), -getHeight(), null);
+		    g.dispose();
+			
+			images[i] = flippedImage;
+		}
+	}
+	
 	public void rotate(double degrees) {
 		double rad = (this.rotation + degrees) * 180d / Math.PI;
 		this.rotation += degrees;
+		// calculate new dimensions after rotation
 		double cos = Math.abs(Math.cos(rad));
 		double sin = Math.abs(Math.sin(rad));
 		int rotatedWidth = (int) Math.round(getOriginalWidth() * cos + getOriginalHeight() * sin);
 		int rotatedHeight = (int) Math.round(getOriginalHeight() * cos + getOriginalWidth() * sin);
 		
+		// create AT to draw with transformation
 		AffineTransform at = new AffineTransform();
 		at.translate((double) (rotatedWidth - getOriginalWidth()) / 2, (double) (rotatedHeight - getOriginalHeight()) / 2);
 		at.rotate(rad, (double) getOriginalWidth()/2, (double) getOriginalHeight()/2);
@@ -304,6 +332,7 @@ public class Asset {
 			BufferedImage rotatedImage = new BufferedImage(rotatedWidth, rotatedHeight, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = rotatedImage.createGraphics();
 			g.setTransform(at);
+			// use original image to draw, otherwise quality decreases
 			g.drawImage(getOriginalImage(i), 0, 0, null);
 		    g.dispose();
 			
