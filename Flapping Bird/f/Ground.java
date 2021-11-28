@@ -15,7 +15,7 @@ public class Ground extends CollisionEntity {
 	public Ground() {
 		super(position, width, height, layer, "ground");
 		
-		Asset grass = new Asset("FlappingBirdAssets/grass.png", new Vector2D(-400, -30), 0);
+		Asset grass = new Asset("Flapping Bird/Assets/grass.png", new Vector2D(-400, -30), 0);
 		grass.setVisible(true);
 		grass.rescale(0.3);
 		

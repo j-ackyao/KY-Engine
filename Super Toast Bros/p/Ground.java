@@ -8,7 +8,7 @@ public class Ground extends CollisionEntity {
 
 	public Ground(double x, double y, int collisionBoxWidth, int collisionBoxHeight, int layer, String name) {
 		super(x, y, collisionBoxWidth, collisionBoxHeight, layer, name);
-		Asset wall = new Asset("SuperToastBrosAssets/grass.png", new Vector2D(0, 0), 0, "grass");
+		Asset wall = new Asset("Super Toast Bros/Assets/grass.png", new Vector2D(0, 0), 0, "grass");
 		wall.setVisible(true);
 		
 		for(int i = -20; i < 50; i++) {

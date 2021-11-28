@@ -24,7 +24,7 @@ public class Player extends CollisionEntity {
 	
 	Player(){
 		super(0, 0, 160, 215, 1, "player");
-		bread = new Asset(new String[]{"SuperToastBrosAssets/bread.png", "SuperToastBrosAssets/bread1.png"}, new Vector2D(0, -20), 0, "bread");
+		bread = new Asset(new String[]{"Super Toast Bros/Assets/bread.png", "Super Toast Bros/Assets/bread1.png"}, new Vector2D(0, -20), 0, "bread");
 		bread.rescale(1);
 		bread.setVisible(true);
 		add(bread);

@@ -45,7 +45,7 @@ public class Main extends KYscreen {
 	@Override
 	public void start() {
 		
-		String[] group = {"SuperToastBrosAssets/nya.png","SuperToastBrosAssets/ichi.png","SuperToastBrosAssets/ni.png","SuperToastBrosAssets/san.png", "SuperToastBrosAssets/nya.png", "SuperToastBrosAssets/arigatou.png"};
+		String[] group = {"Super Toast Bros/Assets/nya.png","Super Toast Bros/Assets/ichi.png","Super Toast Bros/Assets/ni.png","Super Toast Bros/Assets/san.png", "Super Toast Bros/Assets/nya.png", "Super Toast Bros/Assets/arigatou.png"};
 		nya = new AnimationAsset(group, new Vector2D(0, 0), 1, 0, "nya");
 		nya.rescale(0.28);
 		nya.setVisible(true);
@@ -114,7 +114,7 @@ public class Main extends KYscreen {
 		
 		
 		
-		background = new Asset("SuperToastBrosAssets/background.png", new Vector2D(0, 100), 0);
+		background = new Asset("Super Toast Bros/Assets/background.png", new Vector2D(0, 100), 0);
 		background.setPos(400, 500);
 		background.rescale(2);
 		background.setVisible(true);

@@ -29,7 +29,7 @@ public class Player extends CollisionEntity {
 		super(position.clone(), width, height, layer, "player");
 		setCollision(true);
 		
-		bird = new AnimationAsset(new String[]{"FlappingBirdAssets/bird1.png", "FlappingBirdAssets/bird.png"}, new Vector2D(-7, 10), 1, 0);
+		bird = new AnimationAsset(new String[]{"Flapping Bird/Assets/bird1.png", "Flapping Bird/Assets/bird.png"}, new Vector2D(-7, 10), 1, 0);
 		bird.setVisible(true);
 		add(bird);
 		

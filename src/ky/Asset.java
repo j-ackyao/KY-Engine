@@ -36,7 +36,7 @@ public class Asset {
 	
 	public static BufferedImage getMissing() {
 		try {
-			return ImageIO.read(new File("src/ky/missing.png"));
+			return ImageIO.read(new File("src/missing.png"));
 		} catch (IOException missingFallbackTexture) {
 			missingFallbackTexture.printStackTrace();
 			System.exit(0);

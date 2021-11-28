@@ -161,7 +161,7 @@ public class Main extends KYscreen {
 		CollisionEntity scoreDetectorReseter = new CollisionEntity(-wallWidth, getHeight()/2, 10, getHeight(), 2, "reseter");
 		scoreDetectorReseter.setVisible(true);
 		
-		Asset wall = new Asset("FlappingBirdAssets/wall.png", new Vector2D(0, 0), 0);
+		Asset wall = new Asset("Flapping Bird/Assets/wall.png", new Vector2D(0, 0), 0);
 		wall.setVisible(true);
 		wall.rescale(wallWidth/256d);
 		for(int i = 0; i < walls; i++) {

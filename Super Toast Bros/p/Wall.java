@@ -9,7 +9,7 @@ public class Wall extends CollisionEntity {
 	public Wall(double x, double y, int collisionBoxWidth, int collisionBoxHeight, int layer) {
 		super(x, y, collisionBoxWidth, collisionBoxHeight, layer, "wall");
 		
-		Asset wall = new Asset("SuperToastBrosAssets/wall.png", new Vector2D(0, 0), 0, "wall");
+		Asset wall = new Asset("Super Toast Bros/Assets/wall.png", new Vector2D(0, 0), 0, "wall");
 		wall.setVisible(true);
 		
 		
