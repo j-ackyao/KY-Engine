@@ -94,7 +94,7 @@ public class Player extends CollisionEntity {
 		}
 		
 		if(win) {
-			bread.rotate(0.0005 * deltaT * getVel().getX());
+			rotate(1 * deltaT * getVel().getX());
 		}
 	}
 }

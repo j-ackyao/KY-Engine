@@ -49,6 +49,7 @@ public class Asset {
 	private Vector2D position;
 	private int width, height;
 	private int originalWidth, originalHeight;
+	private double rescaleFactor = 1; // rescale factor, mainly used for rotation
 	private double rotation = 0; // in degrees
 	protected BufferedImage[] images = null; // sprite(s) of asset
 	private BufferedImage[] originalImages = null;
@@ -279,6 +280,7 @@ public class Asset {
 
 	
 	public void rescale(double factor) {
+		this.rescaleFactor = factor;
 		this.width *= factor;
 		this.height *= factor;
 	}
@@ -315,7 +317,7 @@ public class Asset {
 	}
 	
 	public void rotate(double degrees) {
-		double rad = (this.rotation + degrees) * 180d / Math.PI;
+		double rad = (this.rotation + degrees) / 180d * Math.PI;
 		this.rotation += degrees;
 		// calculate new dimensions after rotation
 		double cos = Math.abs(Math.cos(rad));
@@ -339,8 +341,8 @@ public class Asset {
 			images[i] = rotatedImage;
 		}
 		
-		this.width = rotatedWidth;
-		this.height = rotatedHeight;
+		this.width = (int) Math.round(rotatedWidth * this.rescaleFactor);
+		this.height = (int) Math.round(rotatedHeight * this.rescaleFactor);
 	}
 	
 	public int[] getDimensions() {

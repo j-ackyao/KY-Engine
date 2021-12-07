@@ -137,7 +137,6 @@ public class Main extends KYscreen {
 	@Override
 	public void update() {
 
-		
 		/*
 		nyaentity.setVel(0, 0);
 		
