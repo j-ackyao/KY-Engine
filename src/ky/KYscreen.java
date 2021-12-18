@@ -202,9 +202,6 @@ public abstract class KYscreen extends JFrame {
 					for(Asset a : allAssets[i]) {
 						
 						if(a.isVisible()) {
-							if(a instanceof Text) {
-								((Text) a).updateText();
-							}
 
 							int renderXPos = (int) Math.round(a.getX() - (double) a.getWidth()/2 - getCameraPos().getX());
 							int renderYPos = (int) Math.round(a.getY() - (double) a.getHeight()/2 - getCameraPos().getY());

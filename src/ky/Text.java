@@ -62,16 +62,26 @@ public class Text extends Asset {
 	}
 	
 	public void setText(String text) {
-		this.updateText = text;
+		if(!this.text.equals(text)) {
+			this.text = text;
+			updateText();
+		}
 	}
 	
 	public void setFont(Font font) {
-		this.updateFont = font;
+		if(!this.font.equals(font)) {
+			this.font = font;
+			updateText();
+		}
 	}
 	
 	public void setColor(Color color) {
-		this.updateColor = color;
+		if(!this.color.equals(color)) {
+			this.color = color;
+			updateText();
+		}
 	}
+	
 	
 
 	public Text clone() {
@@ -83,20 +93,15 @@ public class Text extends Asset {
 	
 	
 	
-	public void updateText() {
-		if(!this.text.equals(this.updateText) || !this.font.equals(this.updateFont) || !this.color.equals(this.updateColor)) {
-			this.text = this.updateText;
-			this.font = this.updateFont;
-			this.color = this.updateColor;
-			
-			Graphics2D g = this.images[0].createGraphics();
-			g.setBackground(new Color(255, 255, 255, 0));
-			g.clearRect(0, 0, getWidth(), getHeight());
-			
-			g.setFont(this.font);
-			g.setColor(this.color);
-			g.drawString(this.text, 0, this.font.getSize());
-			g.dispose();
-		}
+	private void updateText() {
+
+		Graphics2D g = this.images[0].createGraphics();
+		g.setBackground(new Color(255, 255, 255, 0));
+		g.clearRect(0, 0, getWidth(), getHeight());
+		
+		g.setFont(this.font);
+		g.setColor(this.color);
+		g.drawString(this.text, 0, this.font.getSize());
+		g.dispose();
 	}
 }
