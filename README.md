@@ -12,4 +12,3 @@ Preferably Windows operating system
 
 
 
-when my thousands of lines weren't committed under my email 😢
