@@ -12,8 +12,11 @@ public class Text extends Asset {
 	private Font font;
 	private Color color;
 	
+	@SuppressWarnings("unused")
 	private String updateText;
+	@SuppressWarnings("unused")
 	private Font updateFont;
+	@SuppressWarnings("unused")
 	private Color updateColor;
 	
 	public Text(String text, Font font, Color color, Vector2D position, int width, int height, int layer) {

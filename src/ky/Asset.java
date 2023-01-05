@@ -281,8 +281,8 @@ public class Asset {
 	
 	public void rescale(double factor) {
 		this.rescaleFactor = factor;
-		this.width = this.originalWidth * factor;
-		this.height = this.originalHeight * factor;
+		this.width = (int) Math.round(this.originalWidth * factor);
+		this.height = (int) Math.round(this.originalHeight * factor);
 	}
 	
 	public void setRotation(double degrees) {
