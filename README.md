@@ -9,6 +9,6 @@ Java 8
 
 Preferably Windows operating system
 
-
+#### [Check out a project made by RHS programming club!](https://github.com/rhsProgrammingClub/wegaming)
 
 
