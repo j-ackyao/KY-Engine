@@ -3,7 +3,6 @@ package ky;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -12,10 +11,12 @@ public class Asset {
 
 	public static BufferedImage readImage(String filename) {
 		BufferedImage image = null;
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		try {
-			image = ImageIO.read(new File(filename));
-		} catch (IOException missingTexture) {
+			image = ImageIO.read(cl.getResource(filename));
+		} catch (IOException | IllegalArgumentException missingTexture ) {
 			missingTexture.printStackTrace();
+			System.out.println("Attempted to find file at: " + filename);
 			image = getMissing();
 		}
 		return image;
@@ -23,11 +24,13 @@ public class Asset {
 	
 	public static BufferedImage[] readImage(String[] filenames) {
 		BufferedImage[] images = new BufferedImage[filenames.length];
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		for(int i = 0; i < filenames.length; i++) {
 			try {
-				images[i] = ImageIO.read(new File(filenames[i]));
-			} catch (IOException missingTexture) {
+				images[i] = ImageIO.read(cl.getResource(filenames[i]));
+			} catch (IOException | IllegalArgumentException missingTexture) {
 				missingTexture.printStackTrace();
+				System.out.println("Attempted to find file at: " + filenames[i]);
 				images[i] = getMissing();
 			}
 		}
@@ -36,7 +39,7 @@ public class Asset {
 	
 	public static BufferedImage getMissing() {
 		try {
-			return ImageIO.read(new File("src/missing.png"));
+			return ImageIO.read(Asset.class.getResource("/resources/missing.png"));
 		} catch (IOException missingFallbackTexture) {
 			missingFallbackTexture.printStackTrace();
 			System.exit(0);

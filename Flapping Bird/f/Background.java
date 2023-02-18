@@ -11,7 +11,7 @@ public class Background extends Entity {
 	
 	public Background() {
 		super(0, 0, 0);
-		background = new Asset("Flapping Bird/Assets/background.png", new Vector2D(400, 300), 0);
+		background = new Asset("Assets/background.png", new Vector2D(400, 300), 0);
 		background.setVisible(true);
 		add(background);
 		background2 = background.clone();

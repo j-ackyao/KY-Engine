@@ -45,13 +45,12 @@ public class Main extends KYscreen {
 	@Override
 	public void start() {
 		
-		String[] group = {"Super Toast Bros/Assets/nya.png","Super Toast Bros/Assets/ichi.png","Super Toast Bros/Assets/ni.png","Super Toast Bros/Assets/san.png", "Super Toast Bros/Assets/nya.png", "Super Toast Bros/Assets/arigatou.png"};
+		String[] group = {"Assets/nya.png","Assets/ichi.png","Assets/ni.png","Assets/san.png", "Assets/nya.png", "Assets/arigatou.png"};
 		nya = new AnimationAsset(group, new Vector2D(0, 0), 1, 0, "nya");
-		nya.rescale(0.28);
 		nya.setVisible(true);
 		
 		
-		nyaentity = new CollisionEntity(200, 0, 200, 200, 2, "nya");
+		nyaentity = new CollisionEntity(200, -150, 200, 200, 2, "nya");
 		nyaentity.setStaticCollision(true);
 		nyaentity.add(nya);
 		nyaentity.setVisible(true);
@@ -114,7 +113,7 @@ public class Main extends KYscreen {
 		
 		
 		
-		background = new Asset("Super Toast Bros/Assets/background.png", new Vector2D(0, 100), 0);
+		background = new Asset("Assets/background.png", new Vector2D(0, 100), 0);
 		background.setPos(400, 500);
 		background.rescale(2);
 		background.setVisible(true);
@@ -176,7 +175,7 @@ public class Main extends KYscreen {
 				for(Entity c : b) {
 					for(Asset[] d : c.getAssetLayers()) {
 						for(Asset e : d) {
-							e.rescale(0.5);
+							e.rescale(1);
 						}
 					}
 				}

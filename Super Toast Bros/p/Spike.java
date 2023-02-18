@@ -9,7 +9,7 @@ public class Spike extends CollisionEntity {
 	public Spike(double x, double y, int collisionBoxWidth, int collisionBoxHeight, int layer) {
 		super(x, y, collisionBoxWidth, collisionBoxHeight, layer, "spike");
 		
-		Asset spike = new Asset("Super Toast Bros/Assets/spike.png", new Vector2D(0, 0), 0, "spike");
+		Asset spike = new Asset("Assets/spike.png", new Vector2D(0, 0), 0, "spike");
 		spike.setVisible(true);
 		
 		
